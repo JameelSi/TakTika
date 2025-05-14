@@ -169,3 +169,28 @@ body {
     height: 200px;
   }
 }
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #2c2c2e;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #fb923c;
+  border-radius: 8px;
+  border: 2px solid #2c2c2e;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+/* Optional for Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #2c2c2e #2c2c2e;
+}

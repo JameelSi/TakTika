@@ -25,7 +25,7 @@ function App() {
           setTimeout(() => {
             initialize(socket, currentUser);
             setIsLoading(false);
-          }, 2000);
+          }, 3000);
         } catch (error) {
           console.error('Failed to load game data:', error);
         }

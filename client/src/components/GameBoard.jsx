@@ -5,7 +5,7 @@ import GameControls from './GameControls';
 import GameInfo from './GameInfo';
 import EventWheel from './EventWheel';
 import CombatResolver from './CombatResolver';
-import { createInitialTerritories, getAdjacentTerritories } from '../game/utils/mapUtils';
+
 import geoMap from '../game/assets/standard-map.json'; // Load your GeoJSON here
 
 const GameBoard = () => {
@@ -16,7 +16,6 @@ const GameBoard = () => {
   const [combatData, setCombatData] = useState(null);
 
   useEffect(() => {
-    // Fake map init from custom GeoJSON properties
     const rawTerritories = geoMap.features.map((feature) => ({
       id: feature.properties.id,
       name: feature.properties.name,
