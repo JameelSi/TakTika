@@ -50,16 +50,16 @@ const Lobby = ({ onStartGame }) => {
           <h2 className="text-white">Strategic Conquest Awaits</h2>
         </div>
         
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-2  gap-6">
           {/* Left Column - Players & Map Selection */}
-          <div className="space-y-8">
+          <div className="grid grid-cols-subgrid gap-6">
             <div className="bg-[#32333a] rounded-xl p-6 shadow-inner">
               <h2 className="text-2xl font-bold mb-4 text-white flex items-center">
                 <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
                 Players Online
               </h2>
               
-              <div className="space-y-3">
+              <div>
                 {voiceParticipants.length === 0 ? (
                   <p className="text-gray-400 italic">Waiting for players to join...</p>
                 ) : (
@@ -99,7 +99,7 @@ const Lobby = ({ onStartGame }) => {
               </div>
             </div>
             
-            <div className="relative w-full max-w-xl mx-auto bg-[#3a3b44] p-6 rounded-xl shadow-xl">
+            <div className=" bg-[#32333a] p-6 rounded-xl shadow-inner">
               <h2 className="text-2xl font-bold mb-4 text-white">Select Battlefield</h2>
 
               {/* Gallery Content */}
@@ -107,10 +107,10 @@ const Lobby = ({ onStartGame }) => {
                 {/* Left Arrow */}
                 <button
                   onClick={handlePrev}
-                  className="text-3xl hover:text-orange-400 transition"
+                  className="text-7xl hover:text-orange-400 transition text-white"
                   aria-label="Previous"
                 >
-                  ←
+                  {'<'}
                 </button>
 
                 {/* Map Display */}
@@ -128,10 +128,10 @@ const Lobby = ({ onStartGame }) => {
                 {/* Right Arrow */}
               <button
                 onClick={handleNext}
-                className="text-3xl hover:text-orange-400 transition"
+                className="text-7xl hover:text-orange-400 transition text-white"
                 aria-label="Next"
               > 
-                →
+                {'>'}
               </button>
               </div>
             </div>
