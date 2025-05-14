@@ -2,9 +2,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useDiscord } from '../discord/DiscordProvider';
 import { initSocket } from '../socket';
 import { factionsData } from '../game/data/factions';
-import { mapsData } from '../game/data/maps';
 import { eventsData } from '../game/data/events';
 import { createInitialTerritories } from '../game/utils/mapUtils';
+import geoMap from '../game/assets/standard-map.json';
 
 const GameContext = createContext(null);
 
@@ -23,7 +23,7 @@ export const GameProvider = ({ children }) => {
     gameId: null,
     socket: null,
     currentUser: null,
-    mapId: 'standard',
+    mapId: 'geojson',
     map: null,
     factions: factionsData,
     eventTypes: eventsData,
@@ -35,12 +35,24 @@ export const GameProvider = ({ children }) => {
     resources: {},
   });
 
+  const parseTerritoriesFromGeoJSON = (geojson) => {
+    return geojson.features.map((feature) => ({
+      id: feature.properties.id,
+      name: feature.properties.name,
+      center: feature.properties.center,
+      connections: feature.properties.connections,
+      continent: feature.properties.continent,
+      ownerId: null,
+      value: Math.floor(Math.random() * 6) + 1,
+      color: feature.properties.color || '#999999',
+    }));
+  };
+
   const initialize = (socket, user) => {
     if (gameState.initialized) return;
 
-    const mapId = gameState.mapId;
-    const map = mapsData.find(m => m.id === mapId);
-    const territories = createInitialTerritories(map);
+    const map = geoMap; // Could switch to dynamic later
+    const territories = parseTerritoriesFromGeoJSON(map);
 
     setGameState(prev => ({
       ...prev,
@@ -65,6 +77,12 @@ export const GameProvider = ({ children }) => {
     });
 
     socket.emit('game:join', { userId: user.id, username: user.username });
+  };
+
+  const setMapId = (mapId) => {
+    const map = geoMap; // Hardcoded for now; expandable
+    const territories = parseTerritoriesFromGeoJSON(map);
+    setGameState(prev => ({ ...prev, mapId, map, territories }));
   };
 
   const selectFaction = (playerId, factionId) => {
@@ -96,14 +114,6 @@ export const GameProvider = ({ children }) => {
     }));
 
     gameState.socket?.emit('game:selectFaction', { playerId, factionId });
-  };
-
-  const setMapId = (mapId) => {
-    const map = mapsData.find(m => m.id === mapId);
-    if (!map) return;
-
-    const territories = createInitialTerritories(map);
-    setGameState(prev => ({ ...prev, mapId, map, territories }));
   };
 
   const endTurn = () => {

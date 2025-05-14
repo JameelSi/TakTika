@@ -51,7 +51,7 @@ const EventWheel = ({ onClose, onEventSelected }) => {
       setTimeout(() => {
         if (onEventSelected) onEventSelected(selected);
         setSpinning(false);
-      }, 1000);
+      }, 2500);
     }, 3000);
   };
 

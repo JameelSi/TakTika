@@ -84,17 +84,6 @@ export function DiscordProvider({ children }) {
         setDiscord(discordSdk);
       } catch (error) {
         console.error('Failed to initialize Discord SDK:', error);
-
-        // For development outside Discord, set mock data
-        if (import.meta.env.CURRENT_ENV === 'local') {
-          setCurrentUser({
-            id: 'mock-user-id',
-            username: 'MockUser',
-            discriminator: '0000',
-            avatar: null,
-          });
-          setIsReady(true);
-        }
       }
     }
     

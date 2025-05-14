@@ -1,64 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { Stage, Container, Sprite, Graphics, Text } from '@pixi/react';
-import * as PIXI from 'pixi.js';
-import { useGame } from '../contexts/GameContext';
+import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
+import { useGameStore } from '../game/state/gameStore';
 import GameControls from './GameControls';
 import GameInfo from './GameInfo';
 import EventWheel from './EventWheel';
 import CombatResolver from './CombatResolver';
+import { createInitialTerritories, getAdjacentTerritories } from '../game/utils/mapUtils';
+import geoMap from '../game/assets/standard-map.json'; // Load your GeoJSON here
 
 const GameBoard = () => {
-  const { map, players, territories, currentTurn, timeOfDay } = useGame();
-  const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
+  const { players, currentTurn, timeOfDay } = useGameStore();
+  const [territories, setTerritories] = useState([]);
   const [showEventWheel, setShowEventWheel] = useState(false);
   const [showCombat, setShowCombat] = useState(false);
   const [combatData, setCombatData] = useState(null);
-  
-  // Handle window resize
+
   useEffect(() => {
-    const handleResize = () => {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight
-      });
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    // Fake map init from custom GeoJSON properties
+    const rawTerritories = geoMap.features.map((feature) => ({
+      id: feature.properties.id,
+      name: feature.properties.name,
+      center: feature.properties.center,
+      connections: feature.properties.connections,
+      continent: feature.properties.continent,
+      ownerId: null,
+      value: Math.floor(Math.random() * 6) + 1,
+      color: feature.properties.color,
+    }));
+    setTerritories(rawTerritories);
   }, []);
-  
-  // Render the map territories
-  const renderTerritories = () => {
-    return territories.map((territory) => {
-      const owner = territory.ownerId ? players[territory.ownerId] : null;
-      const fillColor = owner ? owner.color : 0xCCCCCC;
-      
-      return (
-        <Graphics
-          key={territory.id}
-          draw={(g) => {
-            g.clear();
-            g.beginFill(fillColor, 0.7);
-            g.lineStyle(2, 0x000000, 1);
-            g.drawRect(
-              territory.x, 
-              territory.y, 
-              territory.width || 100, 
-              territory.height || 100
-            );
-            g.endFill();
-          }}
-          interactive={true}
-          pointerdown={() => handleTerritoryClick(territory)}
-        />
-      );
-    });
-  };
-  
-  // Handle territory click
-  const handleTerritoryClick = (territory) => {
-    console.log('Territory clicked:', territory);
-    
+
+  const handleTerritoryClick = (geo) => {
+    const territory = territories.find(t => t.id === geo.properties.id);
+    if (!territory) return;
+
     if (Math.random() > 0.7) {
       setCombatData({
         attackerId: Object.keys(players)[0],
@@ -68,70 +43,54 @@ const GameBoard = () => {
       setShowCombat(true);
     }
   };
-  
-  // Apply day/night overlay
-  const getDayNightOverlay = () => {
-    if (timeOfDay === 'night') {
-      return (
-        <Graphics
-          draw={(g) => {
-            g.clear();
-            g.beginFill(0x191970, 0.3);
-            g.drawRect(0, 0, dimensions.width, dimensions.height);
-            g.endFill();
-          }}
-        />
-      );
-    }
-    return null;
+
+  const getFillColor = (territory) => {
+    const owner = territory.ownerId ? players[territory.ownerId] : null;
+    return owner ? owner.color : territory.color || '#CCC';
   };
-  
+
   return (
-    <div className="game-container relative">
-      <Stage
-        width={dimensions.width}
-        height={dimensions.height}
-        options={{ 
-          backgroundColor: 0xf5f5dc,
-          resolution: window.devicePixelRatio || 1,
-          autoDensity: true
-        }}
-      >
-        <Container>
-          <Graphics
-            draw={(g) => {
-              g.clear();
-              g.beginFill(0xe4e4b8);
-              g.drawRect(0, 0, dimensions.width, dimensions.height);
-              g.endFill();
-            }}
-          />
-          {renderTerritories()}
-          {getDayNightOverlay()}
-        </Container>
-      </Stage>
-      
+    <div className={`game-container ${timeOfDay}`}>
+      <ComposableMap projection="geoEqualEarth">
+        <Geographies geography={geoMap}>
+          {({ geographies }) =>
+            geographies.map((geo) => {
+              const territory = territories.find(t => t.id === geo.properties.id);
+              return (
+                <Geography
+                  key={geo.rsmKey}
+                  geography={geo}
+                  onClick={() => handleTerritoryClick(geo)}
+                  style={{
+                    default: {
+                      fill: getFillColor(territory),
+                      stroke: "#000",
+                      strokeWidth: 0.75,
+                      outline: "none",
+                    },
+                    hover: {
+                      fill: "#FFD700",
+                      outline: "none"
+                    },
+                    pressed: {
+                      fill: "#FF6347",
+                      outline: "none"
+                    }
+                  }}
+                />
+              );
+            })
+          }
+        </Geographies>
+      </ComposableMap>
+
       <GameInfo />
       <GameControls onSpinWheel={() => setShowEventWheel(true)} />
-      
-      {showEventWheel && (
-        <EventWheel 
-          onClose={() => setShowEventWheel(false)} 
-          onEventSelected={(event) => {
-            console.log('Event selected:', event);
-            setShowEventWheel(false);
-          }} 
-        />
-      )}
-      
+      {showEventWheel && <EventWheel onClose={() => setShowEventWheel(false)} />} 
       {showCombat && combatData && (
         <CombatResolver 
-          data={combatData}
-          onClose={() => setShowCombat(false)}
-          onCombatResolved={(result) => {
-            console.log('Combat resolved:', result);
-            setShowCombat(false);
-          }}
+          data={combatData} 
+          onClose={() => setShowCombat(false)} 
         />
       )}
     </div>

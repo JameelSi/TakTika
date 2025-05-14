@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { factionsData } from '../data/factions';
-import { mapsData } from '../data/maps';
 import { eventsData } from '../data/events';
 import { createInitialTerritories } from '../utils/mapUtils';
+import geoMap from '../assets/standard-map.json';
 
 export const useGameStore = create((set, get) => ({
   // Game state
@@ -12,8 +12,8 @@ export const useGameStore = create((set, get) => ({
   currentUser: null,
   
   // Game settings
-  mapId: 'standard',
-  map: null,
+  mapId: 'geojson', // This can be updated to a dynamic value later
+  map: geoMap, // Load the custom map (GeoJSON)
   factions: factionsData,
   eventTypes: eventsData,
   
@@ -29,8 +29,7 @@ export const useGameStore = create((set, get) => ({
   initialize: (socket, user) => {
     if (get().initialized) return;
     
-    const mapId = get().mapId;
-    const map = mapsData.find(m => m.id === mapId);
+    const map = geoMap; // Load the custom map directly for now
     const territories = createInitialTerritories(map);
     
     set({
@@ -93,9 +92,7 @@ export const useGameStore = create((set, get) => ({
   
   // Map actions
   setMapId: (mapId) => {
-    const map = mapsData.find(m => m.id === mapId);
-    if (!map) return;
-    
+    const map = geoMap; // Use geoMap directly since you're not using dynamic map imports
     set({ mapId, map });
     
     // Reload territories for the new map

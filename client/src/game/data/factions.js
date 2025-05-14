@@ -37,18 +37,5 @@ export const factionsData = [
     ],
     dayBonus: 'Increased food collection',
     nightPenalty: 'Slower movement'
-  },
-  {
-    id: 'leafcutter_ants',
-    name: 'Leafcutter Ants',
-    description: 'Agricultural experts who farm their territories',
-    color: '#3182CE',
-    abilities: [
-      'Agriculture: Can create farms in territories',
-      'Population Growth: Faster worker production',
-      'Weakness: Require more food'
-    ],
-    dayBonus: 'Farm productivity increases',
-    nightPenalty: 'Reduced farm output'
   }
 ];
