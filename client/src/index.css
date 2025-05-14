@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #8B4513;
+  --secondary: #3A5311;
+  --accent: #F27D0C;
+  --background: #FFF8E1;
+  --text: #2C1810;
+  --danger: #C53030;
+  --success: #2F855A;
+  --warning: #DD6B20;
+  --night-overlay: rgba(25, 25, 112, 0.5);
+  --day-overlay: rgba(255, 236, 179, 0.2);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: var(--text);
+  background-color: var(--background);
+  min-height: 100vh;
+  position: relative;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-container {
+  flex: 1;
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.game-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.day {
+  background: linear-gradient(to bottom, #87ceeb, #e4f1fe);
+}
+
+.night {
+  background: linear-gradient(to bottom, #1a1a40, #3a3a75);
+  color: #e4e4e4;
+}
+
+.btn {
+  @apply px-4 py-2 rounded-md font-semibold text-white transition-all duration-200 ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+  @apply bg-[#8B4513] hover:bg-[#6B3000];
+}
+
+.btn-secondary {
+  @apply bg-[#3A5311] hover:bg-[#2A3F0D];
+}
+
+.btn-accent {
+  @apply bg-[#F27D0C] hover:bg-[#D76B0A];
+}
+
+.btn-disabled {
+  @apply bg-gray-400 cursor-not-allowed;
+}
+
+.tooltip {
+  @apply absolute bg-black bg-opacity-75 text-white px-2 py-1 text-sm rounded shadow-lg z-50;
+  pointer-events: none;
+}
+
+.card {
+  @apply bg-white rounded-lg shadow-md p-4;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: var(--primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.flip {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.flip.active {
+  transform: rotateY(180deg);
+}
+
+.wheel-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+}
+
+.wheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  transition: transform 3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 40px;
+  background-color: var(--accent);
+  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+  z-index: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .game-container {
+    padding: 1rem;
+  }
+  
+  .wheel-container {
+    width: 250px;
+    height: 250px;
+  }
+}
+
+@media (max-width: 640px) {
+  .wheel-container {
+    width: 200px;
+    height: 200px;
+  }
+}
