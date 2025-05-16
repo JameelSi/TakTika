@@ -4,7 +4,7 @@ import { initSocket } from '../socket';
 import { factionsData } from '../game/data/factions';
 import { eventsData } from '../game/data/events';
 import { createInitialTerritories } from '../game/utils/mapUtils';
-import geoMap from '../game/assets/standard-map.json';
+import geoMap from '../game/data/standard-map.json';
 
 const GameContext = createContext(null);
 

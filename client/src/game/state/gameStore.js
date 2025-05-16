@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { factionsData } from '../data/factions';
 import { eventsData } from '../data/events';
 import { createInitialTerritories } from '../utils/mapUtils';
-import geoMap from '../assets/standard-map.json';
+import geoMap from '../data/standard-map.json';
 
 export const useGameStore = create((set, get) => ({
   // Game state

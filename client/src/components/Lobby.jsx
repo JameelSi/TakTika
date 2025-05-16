@@ -2,24 +2,25 @@ import React, { useState } from 'react';
 import { useDiscord } from '../discord/DiscordProvider';
 import { useGameStore } from '../game/state/gameStore';
 import FactionSelector from './FactionSelector';
-import penguin from '../game/assets/penguin.jpg';
-import penguin2 from '../game/assets/penguin2.jpg';
+import penguin from '../assets/penguin.jpg';
+import penguin2 from '../assets/penguin2.jpg';
+import { CaretRight, CaretLeft } from "@phosphor-icons/react";
+import { useNavigate } from 'react-router-dom';
 
-
-const Lobby = ({ onStartGame }) => {
+const Lobby = () => {
+  const navigate = useNavigate();
   const { voiceParticipants, currentUser } = useDiscord();
   const { selectFaction, players, setMapId } = useGameStore();
   const [selectedMap, setSelectedMap] = useState('standard');
   const [isReady, setIsReady] = useState(false);
-  
+  const [currentIndex, setCurrentIndex] = useState(0);
   const maps = [
     { id: 'standard', name: 'Standard Map', description: 'Balanced map with varied terrain', imageUrl: penguin },
     { id: 'forest', name: 'Forest Map', description: 'Dense vegetation favors stealth tactics', imageUrl: penguin2 },
     { id: 'desert', name: 'Desert Map', description: 'Open terrain with limited resources', imageUrl: penguin },
   ];
-  const [currentIndex, setCurrentIndex] = useState(0);
   const currentMap = maps[currentIndex];
-  
+
   const handleMapChange = (e) => {
     setSelectedMap(currentMap);
     setMapId(currentMap.id);
@@ -29,26 +30,27 @@ const Lobby = ({ onStartGame }) => {
     selectFaction(currentUser.id, factionId);
     setIsReady(true);
   };
-    const handlePrev = () => {
+
+  const handlePrev = () => {
     setCurrentIndex((prev) => (prev - 1 + maps.length) % maps.length);
   };
 
   const handleNext = () => {
     setCurrentIndex((prev) => (prev + 1) % maps.length);
   };
+
+  const handleStartGame = () => {
+    navigate('/game');
+  };
+  
+
   const readyPlayerCount = Object.values(players).filter(player => player.faction).length;
   const allPlayersReady = readyPlayerCount === voiceParticipants.length && readyPlayerCount >= 2;
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#87ceeb] to-[#e4f1fe] flex items-center justify-center p-4">
+    <div className=" bg-gradient-to-br from-[#87ceeb] to-[#e4f1fe] flex items-center justify-center p-4">
 
-      <div className="max-w-7xl w-full bg-[#5C4033]/10 backdrop-blur-3xl rounded-2xl shadow-xl border border-white/10 p-8">
-        <div className="text-center mb-10">
-        <h1 className="text-6xl font-bold mb-1 text-[#5C4033]">
-            TakTika
-          </h1>
-          <h2 className="text-white">Strategic Conquest Awaits</h2>
-        </div>
+      <div className=" ">
         
         <div className="grid lg:grid-cols-2  gap-6">
           {/* Left Column - Players & Map Selection */}
@@ -110,7 +112,7 @@ const Lobby = ({ onStartGame }) => {
                   className="text-7xl hover:text-orange-400 transition text-white"
                   aria-label="Previous"
                 >
-                  {'<'}
+                  <CaretLeft size={32} />
                 </button>
 
                 {/* Map Display */}
@@ -131,7 +133,7 @@ const Lobby = ({ onStartGame }) => {
                 className="text-7xl hover:text-orange-400 transition text-white"
                 aria-label="Next"
               > 
-                {'>'}
+                <CaretRight size={32} />
               </button>
               </div>
             </div>
@@ -144,7 +146,7 @@ const Lobby = ({ onStartGame }) => {
             
             <div className="mt-8">
               <button
-                onClick={onStartGame}
+                onClick={handleStartGame}
                 disabled={allPlayersReady}
                 className={`w-full py-4 rounded-lg font-bold text-lg transition-all ${
                   allPlayersReady

@@ -1,11 +1,11 @@
 {
-  "name": "taktik-server",
+  "name": "taktika-server",
   "version": "1.0.0",
-  "description": "Server for TakTik Discord game",
-  "main": "src/index.js",
+  "description": "Server for TakTika Discord game",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
   "keywords": [
     "discord",

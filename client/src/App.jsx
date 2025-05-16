@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useDiscord } from './discord/DiscordProvider';
 import GameBoard from './components/GameBoard';
 import Lobby from './components/Lobby';
@@ -8,7 +9,6 @@ import { initSocket } from './socket';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [gameStarted, setGameStarted] = useState(false);
   const { isReady, currentUser } = useDiscord();
   const { initialize } = useGameStore();
   
@@ -25,7 +25,7 @@ function App() {
           setTimeout(() => {
             initialize(socket, currentUser);
             setIsLoading(false);
-          }, 3000);
+          }, 2000);
         } catch (error) {
           console.error('Failed to load game data:', error);
         }
@@ -44,13 +44,13 @@ function App() {
   }
   
   return (
-    <div className="game-container">
-      {gameStarted ? (
-        <GameBoard />
-      ) : (
-        <Lobby onStartGame={() => setGameStarted(true)} />
-      )}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/lobby" element={<Lobby/>} />
+        <Route path="/game" element={<GameBoard/>} />
+        <Route path="/" element={<Navigate to="/lobby" replace />} />
+      </Routes>
+    </Router>
   );
 }
 

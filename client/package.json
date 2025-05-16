@@ -1,5 +1,5 @@
 {
-  "name": "taktik-client",
+  "name": "taktika-client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,12 +11,14 @@
   },
   "dependencies": {
     "@discord/embedded-app-sdk": "^2.0.0",
+    "@phosphor-icons/react": "^2.1.7",
+    "d3-geo": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-simple-maps": "^3.0.0",
     "socket.io-client": "^4.7.2",
     "zustand": "^4.4.6",
-    "react-simple-maps": "^3.0.0",
-    "d3-geo": "^3.0.1"
+    "react-router-dom": "^6.18.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

@@ -1,0 +1,19 @@
+| Purpose          | Color Example    | Hex     | Description                       |
+| ---------------- | ---------------- | ------- | --------------------------------- |
+| Ice / Snow       | Frost White      | #E8F0F7 | Soft, frosty off-white            |
+| Icy Lavender     | Pale Purple      | #C4D7E0 | Light lavender with a cold tint   |
+| Frozen Teal      | Muted Teal       | #5DA6A7 | Cool teal with icy feel           |
+| Arctic Shadow    | Slate Blue Gray  | #627D98 | Shadow/contrast with blue-gray    |
+| Deep Freeze Blue | Dark Indigo Blue | #324960 | Strong, deep blue                 |
+| Highlight Accent | Electric Cyan    | #00FFFF | Bright cyan accent for highlights |
+| Cracked Ice Gray | Dusty Gray       | #A9B2B8 | For subtle texture or borders     |
+
+| Purpose           | Color Example   | Hex     | Description                         |
+| ----------------- | --------------- | ------- | ----------------------------------- |
+| Ice / Snow        | Snow White      | #F0F8FF | Very light, almost pure white       |
+| Glacier Blue      | Light Blue      | #A9D6E5 | Soft, cold blue                     |
+| Deep Ocean Blue   | Medium Blue     | #177E89 | Deeper blue with teal undertone     |
+| Ice Shadow        | Cool Gray       | #B0BEC5 | For shadows or borders              |
+| Antarctic Sky     | Dark Blue       | #034A6F | Dark, crisp blue for contrast       |
+| Highlight Accent  | Ice Blue / Cyan | #4DD0E1 | Bright icy accent (for buttons etc) |
+| Rock / Ice cracks | Slate Gray      | #708090 | Slightly darker gray/blue           |

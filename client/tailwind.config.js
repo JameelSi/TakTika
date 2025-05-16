@@ -7,11 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#8B4513',
-        secondary: '#3A5311',
-        accent: '#F27D0C',
-        background: '#FFF8E1',
-        textColor: '#2C1810',
+        ice: '#E8F0F7',
+        sky: '#034A6F',
+        teal: '#5DA6A7',
+      },
+      backgroundImage: {
+        'loading-bg': "url('./assets/loading_bg.png')",
+        'day-theme': 'linear-gradient(to bottom, #87ceeb, #e4f1fe)',
+        'night-theme': 'linear-gradient(to bottom, #1a1a40, #3a3a75)',
       },
       animation: {
         'spin-slow': 'spin 3s linear infinite',

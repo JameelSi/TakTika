@@ -2,23 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --primary: #8B4513;
-  --secondary: #3A5311;
-  --accent: #F27D0C;
-  --background: #FFF8E1;
-  --text: #2C1810;
-  --danger: #C53030;
-  --success: #2F855A;
-  --warning: #DD6B20;
-  --night-overlay: rgba(25, 25, 112, 0.5);
-  --day-overlay: rgba(255, 236, 179, 0.2);
-}
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  overscroll-behavior: none; /* Prevents bounce on mobile */
 }
 
 html, body {
@@ -29,43 +25,10 @@ html, body {
 
 body {
   font-family: 'Poppins', sans-serif;
-  color: var(--text);
-  background-color: var(--background);
+  color: white;
   min-height: 100vh;
-  position: relative;
 }
 
-#root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.game-container {
-  flex: 1;
-  width: 100%;
-  min-height: 100vh;
-  position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.game-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.day {
-  background: linear-gradient(to bottom, #87ceeb, #e4f1fe);
-}
-
-.night {
-  background: linear-gradient(to bottom, #1a1a40, #3a3a75);
-  color: #e4e4e4;
-}
 
 .btn {
   @apply px-4 py-2 rounded-md font-semibold text-white transition-all duration-200 ease-in-out;
@@ -97,14 +60,6 @@ body {
   @apply bg-white rounded-lg shadow-md p-4;
 }
 
-.spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border-left-color: var(--primary);
-  animation: spin 1s linear infinite;
-}
 
 @keyframes spin {
   0% {
@@ -149,6 +104,12 @@ body {
   background-color: var(--accent);
   clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
   z-index: 1;
+}
+
+img, video, svg, canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* Responsive adjustments */
