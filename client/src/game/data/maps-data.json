@@ -1,0 +1,26 @@
+[
+    {
+        "id": "icehold",
+        "name": "Icehold",
+        "description": "Frozen walls and slippery paths define this old tundra outpost. Stay sharp—one wrong step, and you're sliding into trouble.", 
+        "imageUrl": "/assets/maps-thumbnail/icehold.png"
+    },
+    {
+        "id": "blazewind",
+        "name": "Blazewind",
+        "description": "Scorching winds sweep through a cracked desert wasteland. Limited cover, high heat—perfect for fast, fierce fights.", 
+        "imageUrl": "/assets/maps-thumbnail/blazewind.png"
+    },
+    {
+        "id": "mossvale",
+        "name": "Mossvale",
+        "description": "A thick, green jungle with hidden paths and ancient stones. Every turn is a surprise. Quiet… until it isnt.", 
+        "imageUrl": "/assets/maps-thumbnail/mossvale.png"
+    },
+    {
+        "id": "gearhall",
+        "name": "Gearhall",
+        "description": "An abandoned factory full of ticking traps and moving floors. Master the rhythm, or be crushed by the grind.", 
+        "imageUrl": "/assets/maps-thumbnail/gearhall.png"
+    }
+]
