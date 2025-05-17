@@ -12,13 +12,15 @@
   "dependencies": {
     "@discord/embedded-app-sdk": "^2.0.0",
     "@phosphor-icons/react": "^2.1.7",
+    "bootstrap": "^5.3.6",
     "d3-geo": "^3.0.1",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.10.10",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.18.0",
     "react-simple-maps": "^3.0.0",
     "socket.io-client": "^4.7.2",
-    "zustand": "^4.4.6",
-    "react-router-dom": "^6.18.0"
+    "zustand": "^4.4.6"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

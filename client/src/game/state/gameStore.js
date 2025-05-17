@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { factionsData } from '../data/factions';
+import { clansData } from '../data/clans';
 import { eventsData } from '../data/events';
 import { createInitialTerritories } from '../utils/mapUtils';
 import geoMap from '../data/standard-map.json';
@@ -14,7 +14,7 @@ export const useGameStore = create((set, get) => ({
   // Game settings
   mapId: 'geojson', // This can be updated to a dynamic value later
   map: geoMap, // Load the custom map (GeoJSON)
-  factions: factionsData,
+  clans: clansData,
   eventTypes: eventsData,
   
   // Game progress
@@ -58,17 +58,17 @@ export const useGameStore = create((set, get) => ({
   },
   
   // Player actions
-  selectFaction: (playerId, factionId) => {
-    const faction = get().factions.find(f => f.id === factionId);
-    if (!faction) return;
+  selectClan: (playerId, clanId) => {
+    const clan = get().clans.find(f => f.id === clanId);
+    if (!clan) return;
     
     const updatedPlayers = {
       ...get().players,
       [playerId]: {
         id: playerId,
         name: get().currentUser?.username || 'Player',
-        faction: factionId,
-        color: faction.color,
+        clan: clanId,
+        color: clan.color,
       }
     };
     
@@ -84,9 +84,9 @@ export const useGameStore = create((set, get) => ({
     set({ players: updatedPlayers, resources: updatedResources });
     
     // Notify server
-    get().socket?.emit('game:selectFaction', { 
+    get().socket?.emit('game:selectClan', { 
       playerId, 
-      factionId 
+      clanId 
     });
   },
   

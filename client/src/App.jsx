@@ -6,6 +6,7 @@ import Lobby from './components/Lobby';
 import LoadingScreen from './components/LoadingScreen';
 import { useGameStore } from './game/state/gameStore';
 import { initSocket } from './socket';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);

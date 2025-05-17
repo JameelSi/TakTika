@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useDiscord } from '../discord/DiscordProvider';
 import { initSocket } from '../socket';
-import { factionsData } from '../game/data/factions';
+import { clansData } from '../game/data/clans';
 import { eventsData } from '../game/data/events';
 import { createInitialTerritories } from '../game/utils/mapUtils';
 import geoMap from '../game/data/standard-map.json';
@@ -25,7 +25,7 @@ export const GameProvider = ({ children }) => {
     currentUser: null,
     mapId: 'geojson',
     map: null,
-    factions: factionsData,
+    clans: clansData,
     eventTypes: eventsData,
     currentTurn: 1,
     currentPlayerId: null,
@@ -85,17 +85,17 @@ export const GameProvider = ({ children }) => {
     setGameState(prev => ({ ...prev, mapId, map, territories }));
   };
 
-  const selectFaction = (playerId, factionId) => {
-    const faction = gameState.factions.find(f => f.id === factionId);
-    if (!faction) return;
+  const selectClan = (playerId, clanId) => {
+    const clan = gameState.clans.find(f => f.id === clanId);
+    if (!clan) return;
 
     const updatedPlayers = {
       ...gameState.players,
       [playerId]: {
         id: playerId,
         name: currentUser?.username || 'Player',
-        faction: factionId,
-        color: faction.color,
+        clan: clanId,
+        color: clan.color,
       }
     };
 
@@ -113,7 +113,7 @@ export const GameProvider = ({ children }) => {
       resources: updatedResources,
     }));
 
-    gameState.socket?.emit('game:selectFaction', { playerId, factionId });
+    gameState.socket?.emit('game:selectClan', { playerId, clanId });
   };
 
   const endTurn = () => {
@@ -142,7 +142,7 @@ export const GameProvider = ({ children }) => {
   const value = {
     ...gameState,
     initialize,
-    selectFaction,
+    selectClan,
     setMapId,
     endTurn,
     toggleTimeOfDay,

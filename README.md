@@ -4,11 +4,11 @@ TakTik is a turn-based multiplayer strategy game designed to be played as a Disc
 
 ## Game Features
 
-- **Ant Colony Theme**: Each player controls a different ant faction with unique traits and abilities
+- **Ant Colony Theme**: Each player controls a different ant clan with unique traits and abilities
 - **Territory Control**: Deploy ant units across territories to expand your colony's influence
 - **Combat System**: Uses a coin-flip mechanic (three coins with custom values) to resolve combat
 - **Random Events**: A spin-the-wheel system triggers random events each turn
-- **Day/Night Cycle**: Globally affects faction abilities and gameplay
+- **Day/Night Cycle**: Globally affects clan abilities and gameplay
 - **Multiplayer**: Real-time synchronization using Socket.IO
 - **Discord Integration**: Playable as a Discord Voice Activity
 
@@ -66,13 +66,13 @@ taktik-discord-game/
 - **Turns**: Players take turns to perform actions like claiming territories or attacking
 - **Combat**: When attacking a territory, three coins are flipped. The attacker wins with 2+ heads
 - **Resources**: Each territory provides resources (food, workers) based on its type
-- **Day/Night Cycle**: Different factions gain bonuses or penalties based on the time of day
+- **Day/Night Cycle**: Different clans gain bonuses or penalties based on the time of day
 - **Events**: Random events can help or hinder players throughout the game
 
 ## Extending the Game
 
 The game is designed to be modular and extensible:
-- Add new factions in `client/src/game/data/factions.js`
+- Add new clans in `client/src/game/data/clans.js`
 - Create new maps in `client/src/game/data/maps.js`
 - Add event types in `client/src/game/data/events.js`
 

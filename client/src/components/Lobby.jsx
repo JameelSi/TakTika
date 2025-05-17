@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { useDiscord } from '../discord/DiscordProvider';
 import { useGameStore } from '../game/state/gameStore';
-import FactionSelector from './FactionSelector';
-import { CaretRight, CaretLeft,PlusCircle  } from '@phosphor-icons/react';
+import ClanSelector from './ClanSelector';
+import { PlusCircle,Crown,Bug } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import maps from '../game/data/maps-data.json'
-import { Carousel } from 'flowbite-react';
+import Carousel from 'react-bootstrap/Carousel';
 
 
 const Lobby = () => {
   
   const navigate = useNavigate();
   const { voiceParticipants, currentUser } = useDiscord();
-  const { selectFaction, players } = useGameStore();
+  const { selectClan, players } = useGameStore();
   const [selectedMap, setSelectedMap] = useState('standard');
   const [isReady, setIsReady] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -25,11 +25,15 @@ const Lobby = () => {
 
 
     ];
-  const colorsMap = ['bg-orange-500', 'bg-red-600', 'bg-yellow-400','bg-green-500','bg-lime-200','bg-cyan-400','bg-blue-700','bg-rose-400'];
+  const colorsMap = ['bg-orange-500', 'bg-red-700', 'bg-yellow-400','bg-green-500','bg-lime-200','bg-cyan-400','bg-blue-700','bg-rose-400'];
   const currentMap = maps[currentIndex];
-  
-  const handleFactionSelect = (factionId) => {
-    selectFaction(currentUser.id, factionId);
+
+  const handleSelect = (selectedIndex) => {
+    setCurrentIndex(selectedIndex);
+  };
+
+  const handleClanSelect = (clanId) => {
+    selectClan(currentUser.id, clanId);
     setIsReady(true);
   };
 
@@ -46,16 +50,16 @@ const Lobby = () => {
   };
   
 
-  const readyPlayerCount = Object.values(players).filter(player => player.faction).length;
+  const readyPlayerCount = Object.values(players).filter(player => player.clan).length;
   const allPlayersReady = readyPlayerCount === voiceParticipants.length && readyPlayerCount >= 2;
   
   return (
 
 
-    <div className="min-h-screen bg-day-theme grid grid-rows-[auto_auto_auto] md:grid-cols-4 gap-4 p-4">      
+    <div className="min-h-screen bg-day-theme grid grid-rows-[auto_auto_auto] md:grid-cols-4 gap-4 p-4 pb-0 ">      
 
       {/* Players Section */}
-      <aside className="bg-gray-900 rounded-2xl shadow p-8 flex flex-col min-h-0 md:row-span-2 md:col-span-1 overflow-auto">
+      <aside className="bg-gray-900 rounded-2xl shadow p-8 flex flex-col min-h-0 md:row-span-2 md:col-span-1 overflow-auto  custom-scrollbar">
         <h2 className="text-2xl font-bold mb-6 text-white flex items-center">
           <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
           Players Online
@@ -65,7 +69,7 @@ const Lobby = () => {
           {voiceParticipants.length === 1 ? (
             <p> Waiting for players to join .... </p>
           ) : (
-            localPlayers.map((participant, i) => {
+            voiceParticipants.map((participant, i) => {
               const playerData = players[participant.id];
               const isHost = i === 0;
               return (
@@ -78,6 +82,7 @@ const Lobby = () => {
 
 
                     {/* Avatar */}
+                  <div className="relative w-10 h-10">
                     <img
                       src={
                         participant.avatar
@@ -87,22 +92,23 @@ const Lobby = () => {
                       alt="Avatar"
                       className="w-10 h-10 rounded-full"
                     />
-
+                    {isHost &&<Crown size={18} className="absolute -top-1 -right-1 text-yellow-400 drop-shadow"/>}
+                  </div>
                     {/* Name + status */}
                     <div className="flex flex-col ">
-                      <span className="text-white truncate max-w-48">{participant.global_name}</span>
+                      <span className="text-white truncate max-w-48 font-bold">{participant.global_name}</span>
                       <span
-                        className={`text-xs mt-1 px-2 py-0.5 rounded-full border w-fit ${
+                        className={`text-xs mt-1 px-2 py-0.5 rounded-full w-fit  ${
                           isReady
-                            ? 'bg-green-500/20 text-green-400 border-green-500/30'
-                            : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+                            ? 'bg-green-500/20 text-green-400'
+                            : 'bg-yellow-400/30 text-yellow-400 '
                         }`}
                       >
-                        {isReady ? 'Ready' : 'Selecting...'}
+                        {isReady ? 'Ready!' : 'Selecting...'}
                       </span>
                     </div>
                   </div>
-                  {isHost && <div className="text-xs text-red-400">Host</div>}
+                  {isHost && <div className="px-2 bg-ice text-xs text-yellow-600 rounded-full font-semibold">Host</div>}
                     <div className={`w-6 h-6 flex items-center justify-center rounded-full ${colorsMap[i]} text-white text-xs font-semibold`}>
                       {i + 1}
                     </div>
@@ -118,61 +124,75 @@ const Lobby = () => {
         <button className="mt-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600">Change color</button>
       </aside>
             
-
       {/* Game Settings */}
-      <section className="bg-gray-900 rounded-lg shadow p-4 flex flex-col lg:flex-row overflow-auto space-y-4 lg:space-y-0 lg:space-x-4 min-h-0 md:col-span-3">
+      <section className="bg-gray-900 rounded-2xl shadow p-4 flex flex-col lg:flex-row overflow-auto space-y-4 lg:space-y-0 lg:space-x-4 min-h-0 md:col-span-3 overflow-auto max-h-screen custom-scrollbar">
 
         {/* Map gallery */}
-        <div className="flex-1 flex flex-col justify-between">
+        <div className="flex-1 flex flex-col items-center justify-between ">
           <h2 className="text-2xl font-bold mb-4 text-white">Select Battlefield</h2>
-          <div className="flex flex-row items-center justify-between">
-            <Carousel>
-              <img 
-                src={currentMap.imageUrl} 
-                alt={currentMap.name} 
-                className="w-full max-h-80 object-contain mx-auto mb-4 rounded-lg"
-              />
-              <h3 className="text-white text-xl font-bold">{currentMap.name}</h3>
-              <p className="text-gray-400 text-sm">{currentMap.description}</p>
-            </Carousel>
+            <div className="w-full max-w-xl relative">
+          <Carousel activeIndex={currentIndex} onSelect={handleSelect} interval={null}>
+            {maps.map((map, index) => (
+              <Carousel.Item key={index} >
+                <img
+                  className="w-full max-h-96 object-contain mx-auto mb-4 rounded-lg"
+                  src={map.imageUrl}
+                  alt={map.name}
+                />
+              </Carousel.Item>
+            ))}
+          </Carousel>
+          </div>
+          <h3 className="text-white text-xl font-bold">{currentMap.name}</h3>
+          <p className="text-gray-400 text-sm max-w-sm">{currentMap.description}</p>
 
-            {/* <button
-              onClick={handlePrev}
-              className="text-7xl hover:text-orange-400 transition text-white"
-              aria-label="Previous"
-            >
-              <CaretLeft size={40} />
-            </button>
-
-            <div className="flex-1 text-center">
-              <img 
-                src={currentMap.imageUrl} 
-                alt={currentMap.name} 
-                className="w-full max-h-80 object-contain mx-auto mb-4 rounded-lg"
-              />
-              <h3 className="text-white text-xl font-bold">{currentMap.name}</h3>
-              <p className="text-gray-400 text-sm">{currentMap.description}</p>
-            </div>
-
-            <button
-              onClick={handleNext}
-              className="text-7xl hover:text-orange-400 transition text-white"
-              aria-label="Next"
-            > 
-            <CaretRight size={40} />
-            </button> */}
         </div>
+      
 
+        {/* Game mode & Class */}
+      <div className="w-full lg:w-1/3 bg-gray-600 rounded-lg p-4 flex flex-col space-y-4">
+          <div>
+            <h3 className="mb-2 text-2xl font-boldtext-white">Game mode</h3>
+            <div className="max-h-24 overflow-y-auto space-y-1">
+                <button className="block w-full text-left p-2 border rounded">Solo Slide</button>
+                <button className="block w-full text-left p-2 border rounded"> Twin Slides </button>
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <h3 className="mb-2 text-2xl font-boldtext-white">Select Your Clan</h3>
+            <div className="max-h-24 space-y-1">
+                  <ClanSelector onSelect={handleClanSelect} />
+            </div>
+          </div>
         </div>
       </section>
 
-          
-          
-          {/* <div className="bg-[#32333a] rounded-xl p-6 shadow-inner">
-            <h2 className="text-2xl font-bold mb-4 text-white">Choose Your Faction</h2>
-            <FactionSelector onSelect={handleFactionSelect} />
-            
-            <div className="mt-8">
+      {/* Chat & Start */}
+      <div className="bg-gray-900 p-4 flex flex-col space-y-4 shadow-inner min-h-0 md:col-start-2 md:col-span-3 rounded-2xl">
+        <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 flex-1 min-h-0">
+
+          {/* Chat box */}
+          <div className="flex-1 flex flex-col min-h-0">
+            {/* <div ref={chatRef} className="flex-1 bg-gray-50 rounded-lg p-2 overflow-y-auto">
+              {messages.map((m, i) => (
+                <div key={i} className="text-sm mb-1">
+                  <span className="font-semibold">{m.user}: </span>{m.text}
+                </div>
+              ))}
+            </div>
+            <div className="mt-2 flex space-x-2">
+              {chatButtons.map((btn) => (
+                <button key={btn} onClick={() => handleChat(btn)} className="px-3 py-1 bg-blue-500 text-white rounded">
+                  {btn}
+                </button>
+              ))}
+            </div> */}
+          </div>
+
+          {/* Waiting status */}
+          <div className="w-full md:w-1/4 bg-gray-50 rounded-lg flex items-center justify-center">
+
               <button
                 onClick={handleStartGame}
                 disabled={allPlayersReady}
@@ -189,13 +209,35 @@ const Lobby = () => {
               
               <p className="mt-3 text-sm text-center text-gray-400">
                 {!isReady 
-                  ? 'Select a faction to ready up' 
+                  ? 'Select a clan to ready up' 
                   : voiceParticipants.length < 2 
                     ? 'Need at least 2 players to start' 
                     : 'Waiting for other players to ready up'}
               </p>
-            </div>
-          </div> */}
+          </div>
+        </div>
+      </div>
+
+         {/* Anchor nav */}
+      <footer className="absolute bottom-0 text-xs text-gray-900 mt-4 w-full z-10 bg-[#e4f1fe] px-4 pb-2 border-t border-black ">
+ 
+        <div className="flex flex-col md:flex-row justify-between items-center pt-2 px-4 space-y-2 md:space-y-0 ">
+          <div className="text-left w-full md:w-1/3">made with ❤️ by Jimmy</div>
+          <div className="flex justify-center w-full md:w-1/3 space-x-4">
+            {["FAQ", "Privacy", "About","Report a 🪲"].map((item) => (
+              <a
+                key={item}
+                href="#"
+                className="hover:text-white transition duration-200"
+              >
+                {item}
+              </a>
+            ))}
+          </div>
+          {/* Right */}
+          <div className="text-right w-full md:w-1/3 text-gray-500">V1.0</div>
+        </div>
+      </footer>
           
     </div>
   );

@@ -153,5 +153,15 @@ img, video, svg, canvas {
 /* Optional for Firefox */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #2c2c2e #2c2c2e;
+  scrollbar-color: white #111827;
+}
+
+/* bootstrap carousel */
+.carousel-indicators [data-bs-target] {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.carousel-indicators {
+  bottom: -25px;    
 }

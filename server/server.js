@@ -78,8 +78,8 @@ io.on('connection', (socket) => {
     console.log(`Player ${username} joined game ${gameId}`);
   });
   
-  // Select faction
-  socket.on('game:selectFaction', ({ playerId, factionId }) => {
+  // Select clan
+  socket.on('game:selectClan', ({ playerId, clanId }) => {
     const player = players[playerId];
     if (!player) return;
     
@@ -87,12 +87,12 @@ io.on('connection', (socket) => {
     if (!gameId || !games[gameId]) return;
     
     // Update game state and broadcast to all players
-    io.to(gameId).emit('game:playerSelectFaction', {
+    io.to(gameId).emit('game:playerSelectClan', {
       playerId,
-      factionId,
+      clanId,
     });
     
-    // If this is the first player to select a faction, make them the current player
+    // If this is the first player to select a clan, make them the current player
     if (!games[gameId].currentPlayerId) {
       games[gameId].currentPlayerId = playerId;
       io.to(gameId).emit('game:turn', {
