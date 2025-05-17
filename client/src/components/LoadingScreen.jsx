@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import loadingMessages from "../game/data/loading_messages.json"
+import loadingBg from "../assets/loading_bg.png"
+
 const LoadingScreen = () => {
   const [progress, setProgress] = useState(0);
   const [loadingText, setLoadingText] = useState('Installing bug fixes... literally.');
-  
+  const [bgLoaded, setBgLoaded] = useState(false);
+
   useEffect(() => {
+    // load image before rendering
+    let imageLoaded = false;
+    const img = new Image();
+      img.src = loadingBg;
+      img.onload = () => {
+        imageLoaded = true;
+        setBgLoaded(true); 
+      };
+
     const interval = setInterval(() => {
       setProgress((prevProgress) => {
         const newProgress = prevProgress + Math.random() * 15;
@@ -17,8 +29,12 @@ const LoadingScreen = () => {
     return () => clearInterval(interval);
   }, []);
   
+  if (!bgLoaded) {
+    return null; // Or a solid color fallback while loading
+  }
+
   return (
-    <div className="fixed inset-0 bg-loading-bg bg-cover bg-center">
+    <div className={`fixed inset-0 bg-loading-bg bg-cover bg-center transition-opacity duration-500 ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}>
       <div className="min-h-screen w-full bg-black/10 backdrop-blur-sm flex flex-col items-center justify-center px-4">
         <div className="w-full max-w-md text-center">
 
