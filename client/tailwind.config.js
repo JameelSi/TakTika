@@ -12,7 +12,7 @@ export default {
         teal: '#5DA6A7',
       },
       backgroundImage: {
-        'loading-bg': "url('./assets/loading_bg.png')",
+        'loading-bg': "url('assets/loading_bg.png')",
         'day-theme': 'linear-gradient(to bottom, #87ceeb, #e4f1fe)',
         'night-theme': 'linear-gradient(to bottom, #1a1a40, #3a3a75)',
       },

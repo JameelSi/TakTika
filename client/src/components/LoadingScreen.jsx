@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import loadingMessages from "../game/data/loading_messages.json"
-import loadingBg from "../assets/loading_bg.png"
+import loadingMessages from "../game/data/loading-messages.json"
 
 const LoadingScreen = () => {
   const [progress, setProgress] = useState(0);
@@ -11,7 +10,7 @@ const LoadingScreen = () => {
     // load image before rendering
     let imageLoaded = false;
     const img = new Image();
-      img.src = loadingBg;
+      img.src = "assets/loading_bg.png";
       img.onload = () => {
         imageLoaded = true;
         setBgLoaded(true); 
