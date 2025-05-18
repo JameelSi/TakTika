@@ -11,7 +11,6 @@ const ClanSelector = ({ onSelect }) => {
   };
   
   return (
-  <div className="max-h-96 overflow-y-auto pr-1 custom-scrollbar">
     <div className="space-y-4">
       {clans.map((clan) => (
         <label
@@ -57,7 +56,6 @@ const ClanSelector = ({ onSelect }) => {
         </label>
       ))}
     </div>
-  </div>
   );
 };
 

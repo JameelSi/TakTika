@@ -16,6 +16,7 @@
     "d3-geo": "^3.0.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.10",
+    "react-confetti": "^6.4.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.18.0",
     "react-simple-maps": "^3.0.0",
