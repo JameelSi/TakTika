@@ -17,18 +17,118 @@ const Lobby = () => {
   const [isReady, setIsReady] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [factIndex, setFactIndex] = useState(0);
+  const [localPlayers, setLocalPlayers] = useState([
+        { id: 1, avatar: '',global_name: "jimmy one two three four five six seven eight nine ten",color:"" },
+        { id: 2, avatar: '',global_name: "jimmy2",color:"" },
+        { id: 3, avatar: '',global_name: "jimmy3",color:"" },
+]);
 
-  const localPlayers =  [
-    { id: 1, avatar: '',global_name: "jimmy one two three four five six seven eight nine ten" },
-    { id: 2, avatar: '',global_name: "jimmy2" },
-    { id: 3, avatar: '',global_name: "jimmy3" },
-        { id: 4, avatar: '',global_name: "jimmy3" },
+  const addPlayer = () => {
 
+   const newPlayer = {
+    id: Date.now(),
+    avatar: '',
+    global_name: `Jimmy${localPlayers.length + 1}`,
+    color:"",
+  };
 
+  setLocalPlayers([...localPlayers, newPlayer]);
+  };
 
-    ];
-  const colorsMap = ['border-orange-500', 'border-red-700', 'border-yellow-400','border-green-500','border-lime-200','border-cyan-400','border-blue-700','border-rose-400'];
+  const isMaxPlayers = () => {
+    return localPlayers.length >= 6;
+  }
+   const [showColors, setShowColors] = useState(false);
+  const colorsMap = [
+    {
+      color: 'orange-500',
+      bg: 'bg-orange-500',
+      border: 'border-orange-500',
+    },
+    {
+      color: 'red-600',
+      bg: 'bg-red-600',
+      border: 'border-red-600',
+    },
+    {
+      color: 'yellow-300',
+      bg: 'bg-yellow-300',
+      border: 'border-yellow-300',
+    },
+    {
+      color: 'green-500',
+      bg: 'bg-green-500',
+      border: 'border-green-500',
+    },
+    {
+      color: 'blue-500',
+      bg: 'bg-blue-500',
+      border: 'border-blue-500',
+    },
+    {
+      color: 'rose-300',
+      bg: 'bg-rose-300',
+      border: 'border-rose-300',
+    },
+    {
+      color: 'pink-400',
+      bg: 'bg-pink-400',
+      border: 'border-pink-400',
+    },
+    {
+      color: 'purple-700',
+      bg: 'bg-purple-700',
+      border: 'border-purple-700',
+    },
+    {
+      color: 'black',
+      bg: 'bg-black',
+      border: 'border-black',
+    },
+    {
+      color: 'gray-500',
+      bg: 'bg-gray-500',
+      border: 'border-gray-500',
+    },
+    {
+      color: 'white',
+      bg: 'bg-white',
+      border: 'border-white',
+    },
+    {
+      color: 'lime-300',
+      bg: 'bg-lime-300',
+      border: 'border-lime-300',
+    },
+    {
+      color: 'emerald-300',
+      bg: 'bg-emerald-300',
+      border: 'border-emerald-300',
+    },
+    {
+      color: 'amber-700',
+      bg: 'bg-amber-700',
+      border: 'border-amber-700',
+    },
+    {
+      color: 'violet-900',
+      bg: 'bg-violet-900',
+      border: 'border-violet-900',
+    },
+    {
+      color: 'fuchsia-500',
+      bg: 'bg-fuchsia-500',
+      border: 'border-Ffuchsia-500',
+    },
+  ];
+   const [currentColor, setCurrentColor] = useState(colorsMap[5].bg);
+
   const currentMap = maps[currentIndex];
+  const toggleColors = () => setShowColors(!showColors);
+  const chooseColor = (color) => {
+     setShowColors(false); // close the picker after selection
+    setCurrentColor(color.bg)
+  };
 
   const handleSelect = (selectedIndex) => {
     setCurrentIndex(selectedIndex);
@@ -126,10 +226,10 @@ const handleConfetti = () =>{
  
       <div className='h-[100%] w-5/6 grid grid-cols-1 gap-4 md:grid-cols-10 md:grid-rows-[auto_auto_auto]  mx-auto'>
         {/* Players Section */}
-        <aside className="bg-black/50 md:col-span-3 md:row-span-2 rounded-2xl p-4 overflow-auto custom-scrollbar flex flex-col justify-between">
+        <aside className="bg-black/50 md:col-span-3 md:row-span-2 rounded-2xl p-3 overflow-auto custom-scrollbar flex flex-col justify-between">
           <h2 className="text-2xl font-bold mb-6 text-white flex items-center">
             <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-            Players Online
+            Players Online ({localPlayers.length}/6)
           </h2>
                 
           <div className="flex-1 overflow-y-auto space-y-2">
@@ -137,19 +237,15 @@ const handleConfetti = () =>{
               <p> Waiting for players to join .... </p>
             ) : (
               localPlayers.map((participant, i) => {
-                const playerData = players[participant.id];
                 const isHost = i === 0;
                 return (
                   <div
                     key={participant.id}
-                    className={`flex items-center justify-between p-4  border-2 ${colorsMap[i]} rounded-lg   hover:border-white/20 transition-all`}
+                    className={`flex items-center justify-between p-3  border-3 ${colorsMap[i].border} rounded-lg `}
                   >
-                    {/* Left section: number, avatar, name + status */}
-                    <div className="flex items-center space-x-4">
-
-
-                      {/* Avatar */}
-                    <div className="relative w-10 h-10">
+      
+                     <div className="flex items-center space-x-4">
+                     <div className="relative w-10 h-10">
                       <img
                         src={
                           participant.avatar
@@ -161,8 +257,7 @@ const handleConfetti = () =>{
                       />
                       {isHost &&<Crown size={18} className="absolute -top-1 -right-1 text-yellow-400 drop-shadow"/>}
                     </div>
-                      {/* Name + status */}
-                      <div className="flex flex-col ">
+                       <div className="flex flex-col ">
                         <span className="text-white truncate max-w-48 font-bold">{participant.global_name}</span>
                         <span
                           className={`text-xs mt-1 px-2 py-0.5 rounded-full w-fit  ${
@@ -180,16 +275,36 @@ const handleConfetti = () =>{
                 );
               })
             )}
-            <button className="w-full mt-4 py-2 bg-black/50 hover:bg-gray-800  rounded-lg flex items-center gap-x-2">
+
+            <button className={`w-full mt-4 py-2 bg-white/50  text-white font-semibold hover:bg-gray-800 rounded-lg flex items-center gap-x-2 border-2 ${
+                    isMaxPlayers() ? 'hidden' : '' }`}
+                    onClick={addPlayer}
+                    disabled={isMaxPlayers()}
+            >
               <PlusCircle size={32}/>
               ADD BOT
               </button>
           </div>
-          <button className="w-full py-2 bg-gradient-to-r from-blue-300  to-blue-500 rounded-lg hover:bg-gray-800">Change color 🎨</button>
+          {showColors && (
+            <div className="flex flex-wrap gap-2 p-2 justify-content rounded bg-white/10 border">
+              {colorsMap.map((color) => (
+                <button
+                  key={color.color}
+                  className={`${color.bg} w-8 h-8 rounded-full border-2 border-white`}
+                  onClick={() => chooseColor(color.color)}
+                />
+              ))}
+            </div>
+          )}
+          <button className={`w-full py-2 ${currentColor} rounded-lg hover:from-blue-300 hover:to-blue-300`}
+                  onClick={toggleColors}
+          >
+            Change color 🎨
+          </button>
         </aside>
               
         {/* Game Settings */}
-        <section className="bg-black/50 rounded-2xl md:col-span-7 md:col-start-4 overflow-auto custom-scrollbar flex flex-row">
+        <section className="bg-black/50 rounded-2xl md:col-span-7 md:col-start-4 overflow-auto custom-scrollbar flex flex-row p-3">
 
           {/* Map gallery */}
           <div className=" flex flex-col items-center justify-between w-[60%] py-3">
@@ -199,7 +314,7 @@ const handleConfetti = () =>{
               {maps.map((map, index) => (
                 <Carousel.Item key={index} >
                   <img
-                    className="w-full max-h-80 object-contain mx-auto mb-4 rounded-lg"
+                    className="w-full  object-contain mx-auto mb-4 rounded-lg md:w-3/4 md:max-h-80 sm:w-1/2 sm:max-h-48"
                     src={map.imageUrl}
                     alt={map.name}
                   />
@@ -208,7 +323,7 @@ const handleConfetti = () =>{
             </Carousel>
             </div>
             <h3 className="text-white text-xl font-bold">{currentMap.name}</h3>
-            <p className="text-gray-400 text-sm max-w-sm">{currentMap.description}</p>
+            <p className="text-gray-400 text-sm max-w-md">{currentMap.description}</p>
           </div>
         
           {/* Game mode & Class */}
@@ -225,7 +340,7 @@ const handleConfetti = () =>{
                   </div>
                 </button>
 
-                <button className="w-full text-left p-2 border rounded cursor-not-allowed" disabled="true"> Twin Slides </button>
+                <button className=" w-full text-left p-2 border rounded cursor-not-allowed" disabled> Twin Slides </button>
               </div>
             </div>
 
@@ -249,8 +364,9 @@ const handleConfetti = () =>{
               </div>
 
               <div className="p-2 overflow-x-auto flex flex-row custom-scrollbar justify-between">
-                {["❄️" ,"🐧","❄️","🐧","❄️","🐧","❄️"].map((btn) => (
+                {["❄️" ,"🐧","❄️","🐧","❄️","🐧","❄️"].map((btn,i) => (
                   <button
+                    key={i}
                     onClick={handleConfetti}
                     className="border w-20 rounded-2xl"
                   >

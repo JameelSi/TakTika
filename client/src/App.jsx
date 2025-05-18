@@ -40,9 +40,9 @@ function App() {
     }
   }, [isReady, currentUser, initialize]);
   
-  if (!isReady || isLoading) {
-    return <LoadingScreen />;
-  }
+  // if (!isReady || isLoading) {
+  //   return <LoadingScreen />;
+  // }
   
   return (
     <Router>

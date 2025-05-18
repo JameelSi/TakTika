@@ -15,7 +15,7 @@ const ClanSelector = ({ onSelect }) => {
       {clans.map((clan) => (
         <label
           key={clan.id}
-          className={`block p-4 rounded-lg border-2 cursor-pointer transition-all ${
+          className={`block p-3 rounded-lg border-2 cursor-pointer transition-all ${
             selectedClan === clan.id
               ? 'border-orange-500 bg-orange-500/10' 
               : 'border rounded hover:border-white/30'
@@ -33,16 +33,16 @@ const ClanSelector = ({ onSelect }) => {
           <div className="flex justify-between items-center">
 
             <div className="flex-1">
-              <h3 className="text-white font-semibold">{clan.name}</h3>
-              <p className="text-sm text-gray-400">{clan.description}</p>
-              <div className="mt-2">
+              <h3 className="text-white font-semibold">•&nbsp;&nbsp;{clan.name}</h3>
+              {/* <p className="text-sm text-gray-400">{clan.description}</p> 
+               <div className="mt-2">
                 <h4 className="text-sm font-semibold">Special Abilities:</h4>
                 <ul className="text-xs text-gray-700 mt-1 ml-4 list-disc">
                   {clan.abilities.map((ability, index) => (
                     <li key={index}>{ability}</li>
                   ))}
                 </ul>
-              </div>
+              </div> */}
             </div>
 
             {selectedClan === clan.id && (
