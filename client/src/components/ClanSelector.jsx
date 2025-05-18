@@ -11,14 +11,14 @@ const ClanSelector = ({ onSelect }) => {
   };
   
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {clans.map((clan) => (
         <label
           key={clan.id}
           className={`block p-4 rounded-lg border-2 cursor-pointer transition-all ${
             selectedClan === clan.id
               ? 'border-orange-500 bg-orange-500/10' 
-              : 'border-white/10 hover:border-white/30 bg-[#3a3b44]'
+              : 'border rounded hover:border-white/30'
           }`}
         >
           <input

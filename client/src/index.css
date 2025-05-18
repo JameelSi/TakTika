@@ -139,7 +139,7 @@ img, video, svg, canvas {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #fb923c;
+  background-color: white;
   border-radius: 8px;
   border: 2px solid #2c2c2e;
 }
@@ -150,10 +150,13 @@ img, video, svg, canvas {
   width: 0;
 }
 
-/* Optional for Firefox */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: white #111827;
+.custom-scrollbar::-webkit-scrollbar-button:single-button {
+  display: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button:increment,
+.custom-scrollbar::-webkit-scrollbar-button:decrement {
+  display: none;
 }
 
 /* bootstrap carousel */
