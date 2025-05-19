@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { DiscordSDK } from "@discord/embedded-app-sdk";
-
+import { DiscordSDK } from '@discord/embedded-app-sdk';
+import { assignColor,isColorAvailable  } from '../game/utils/colorManager';
 
 
 
@@ -16,28 +16,53 @@ export function useDiscord() {
 }
 
 export function DiscordProvider({ children }) {
+  
   const [discord, setDiscord] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [voiceParticipants, setVoiceParticipants] = useState([]);
 
+  function addVoiceParticipant(participant) {
+    setVoiceParticipants(prev => {
+      const colorInfo = assignColor(prev);
+      return [...prev, { ...participant, color: colorInfo }];
+    });
+  }
+
+  function changeUserColor(newColor) {
+  if (!isColorAvailable(voiceParticipants, newColor.color, currentUser.id)) {
+    console.warn("Color taken");
+    return;
+  }
+  setVoiceParticipants(prev =>
+    prev.map(p => (p.id === currentUser.id ? { ...p, color: newColor } : p))
+  );
+
+  setCurrentUser(prev => ({ ...prev, color: newColor }));
+}
 
   useEffect(() => {
     async function initializeDiscord() {
       try {
 
-                // Check if we are in a local environment (localhost)
+        // Check if we are in a local environment (localhost)
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
         if (isLocal) {
           // Set mock user data when running locally
-          setCurrentUser({
-            id: 'mock-user-id',
-            username: 'MockUser',
-            globalname: "Jimmyyyy",
-            discriminator: '0000',
-            avatar: null,
-          });
+          const participants = voiceParticipants; // get existing mock participants
+          const colorInfo = assignColor(participants);
+          const mockUser = {
+              id: 'localuser',
+              username: 'localuser',
+              global_name: "Jimmy-Local",
+              discriminator: '0001',
+              avatar: null,
+              color:colorInfo,
+              isBot: false
+            };
+          setCurrentUser(mockUser);
+          setVoiceParticipants([...participants, mockUser]);
           setIsReady(true);
           return;
         }
@@ -72,13 +97,16 @@ export function DiscordProvider({ children }) {
 
         const userId = auth.user.id;
         const user = await discordSdk.commands.getUser({ id: userId });
-
-        setCurrentUser(user);
-
-        // Get voice participants
         const { participants } = await discordSdk.commands.getInstanceConnectedParticipants();
-        setVoiceParticipants(participants);
-        
+        const colorInfo = assignColor(participants);
+        const newRealUser = {
+          ...user,
+          ...colorInfo,
+          isBot: false,
+        };
+
+        setCurrentUser(newRealUser);
+        setVoiceParticipants([...participants, newRealUser]);
 
         setIsReady(true);
         setDiscord(discordSdk);
@@ -99,6 +127,8 @@ export function DiscordProvider({ children }) {
     isReady,
     currentUser,
     voiceParticipants,
+    addVoiceParticipant,
+    changeUserColor,
   };
 
   return (

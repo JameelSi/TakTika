@@ -4,6 +4,11 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+    safelist: [
+      {
+        pattern: /(bg|border)-(orange|red|yellow|green|blue|rose|pink|purple|black|gray|white|lime|emerald|amber|violet|fuchsia)-\d{3}/,
+      },
+    ],
   theme: {
     extend: {
       colors: {

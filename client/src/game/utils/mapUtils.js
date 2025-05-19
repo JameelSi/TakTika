@@ -10,7 +10,6 @@ const CONTINENT_COLORS = {
 export const createInitialTerritories = (map) => {
   // Check if map and map.continents are properly defined
   if (!map || !map.continents || !Array.isArray(map.continents)) {
-    console.error("Map or map.continents is not properly defined.", map);
     return []; // Return an empty array if there's an issue with the map data
   }
 
