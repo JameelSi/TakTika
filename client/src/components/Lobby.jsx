@@ -55,9 +55,10 @@ const Lobby = () => {
 
   const handleClanSelect = (clanId) => {
     selectClan(currentUser.id, clanId);
-    setIsReady(true);
   };
- 
+  const setReady = () =>{
+    setIsReady(prev => !prev);
+  }
 
   const handleStartGame = () => {
     navigate('/game');
@@ -92,7 +93,7 @@ const handleConfetti = () =>{
 
       {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} numberOfPieces="800" gravity="0.3"/>}
  
-      <div className='h-[100%] w-5/6 grid grid-cols-1 gap-4 md:grid-cols-10 md:grid-rows-[auto_auto_auto]  mx-auto'>
+      <div className='h-[100%] w-5/6 grid grid-cols-1 gap-4 md:grid-cols-10 md:grid-rows-[auto_auto_auto] mx-auto'>
         {/* Players Section */}
         <aside className="bg-black/50 md:col-span-3 md:row-span-2 rounded-2xl p-3 overflow-auto custom-scrollbar flex flex-col justify-between">
           <h2 className="text-2xl font-bold mb-6 text-white flex items-center">
@@ -180,21 +181,26 @@ const handleConfetti = () =>{
           {/* Map gallery */}
           <div className=" flex flex-col items-center justify-between w-[60%] py-3">
             <h2 className="text-2xl font-bold mb-4 text-white">Select Battlefield</h2>
-              <div className="w-full max-w-xl relative">
-            <Carousel activeIndex={currentIndex} onSelect={handleSelect} interval={null}>
-              {maps.map((map, index) => (
-                <Carousel.Item key={index} >
-                  <img
-                    className="w-full  object-contain mx-auto mb-4 rounded-lg md:w-3/4 md:max-h-80 sm:w-1/2 sm:max-h-48"
-                    src={map.imageUrl}
-                    alt={map.name}
-                  />
-                </Carousel.Item>
-              ))}
-            </Carousel>
+            <div className="w-full max-w-xl relative mb-2">
+              <Carousel activeIndex={currentIndex} onSelect={handleSelect} interval={null}>
+                {maps.map((map, index) => (
+                  <Carousel.Item key={index} >
+                    <img
+                      className="w-full  object-contain mx-auto md:w-3/4 md:max-h-80 sm:w-1/2 sm:max-h-48"
+                      src={map.imageUrl}
+                      alt={map.name}
+                    />
+                    
+                    <Carousel.Caption >
+                        <h3 className="text-white text-xl font-bold border bg-black/20 rounded">{currentMap.name}</h3>
+                    </Carousel.Caption>
+                  </Carousel.Item>
+                ))}
+                
+              </Carousel>
+              
             </div>
-            <h3 className="text-white text-xl font-bold">{currentMap.name}</h3>
-            <p className="text-gray-400 text-sm max-w-md">{currentMap.description}</p>
+            
           </div>
         
           {/* Game mode & Class */}
@@ -226,15 +232,15 @@ const handleConfetti = () =>{
         </section>
 
         {/* Facts & Start */}
-        <div className="bg-black/50 md:col-span-7 md:col-start-4 md:row-start-2 px-3 py-2 rounded-2xl flex flex-col sm:flex-row justify-between items-center overflow-y-auto custom-scrollbar">
+        <div className="bg-black/50 md:col-span-7 md:col-start-4 md:row-start-2 px-3 py-2 rounded-2xl flex flex-col md:flex-row justify-between items-center md:space-x-4 overflow-y-auto custom-scrollbar">
 
           <div className="flex flex-col w-full md:w-2/3 rounded-lg space-y-2">
-            <div className="p-2 bg-white/50 rounded-lg max-h-40 overflow-y-auto custom-scrollbar">
+            <div className="p-2 bg-white/50 rounded-lg ">
               <h2 className="font-bold text-lg mb-2">Fun Facts  ◕‿‿◕ </h2>
-              <p>• {funFacts[factIndex]}</p>
+              <p className='max-h-10 overflow-y-auto custom-scrollbar'>• {funFacts[factIndex]}</p>
             </div>
 
-            <div className="p-2 flex flex-wrap justify-between gap-2">
+            <div className="p-2 flex justify-between gap-2">
               {["❄️" ,"🐧","❄️","🐧","❄️","🐧","❄️"].map((btn,i) => (
                 <button
                   key={i}
@@ -247,33 +253,32 @@ const handleConfetti = () =>{
             </div>
           </div>
 
-            <div className="flex flex-col items-center justify-center w-full md:w-auto">
-              {!isHost ? (
+            <div className="w-full h-full">
+              {isHost ? (
                     <button
                       onClick={handleStartGame}
-                      disabled={!allPlayersReady}
-                      className={`w-full px-6 py-4 rounded-lg font-bold text-xl transition-all text-center ${
+                      disabled={allPlayersReady}
+                      className={`w-full h-full min-h-20 rounded-lg font-bold text-lg transition-all text-center ${
                         allPlayersReady
-                          ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-green-400 hover:from-orange-600 hover:to-amber-600 transform hover:scale-[1.02]'
+                          ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-green-400'
                           : 'border-2 text-yellow-400 cursor-not-allowed'
                       }`}
                     >
                       {allPlayersReady ? 'Start Game' : `Waiting for players (${readyPlayerCount}/${voiceParticipants.length})`}
                     </button>
+                    
                   ) : (
                     <button
-                      onClick={handleStartGame}
-                      className={`w-full px-6 py-4 rounded-lg font-bold text-xl transition-all text-center ${
+                      onClick={setReady}
+                      className={`w-full h-full min-h-20 rounded-lg font-bold text-xl transition-all text-center  ${
                         isReady
-                          ? 'bg-green-600 text-white hover:bg-green-700'
-                          : 'bg-yellow-500 text-black hover:bg-yellow-600'
+                          ? 'bg-green-500 text-white hover:bg-green-600'
+                          : 'bg-yellow-400 text-white hover:bg-yellow-500'
                       }`}
                     >
                       {isReady ? 'Ready!' : 'Not Ready'}
                     </button>
                   )}
- 
-                
  
             </div>
             
