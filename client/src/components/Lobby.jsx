@@ -9,6 +9,8 @@ import Carousel from 'react-bootstrap/Carousel';
 import Confetti from 'react-confetti';
 import funFacts from '../game/data/funFacts.json'
 import { getAvailableColors } from '../game/utils/colorManager';
+import 'react-tooltip/dist/react-tooltip.css';
+import { Tooltip } from 'react-tooltip';
 
 const Lobby = () => {
   
@@ -61,7 +63,7 @@ const Lobby = () => {
     navigate('/game');
   };
 
-
+  const isHost = true;
 
 
   useEffect(() => {
@@ -104,7 +106,6 @@ const handleConfetti = () =>{
             ) : (
               voiceParticipants.map((participant, i) => {
                 const isHost = i === 0;
-                
                  return (
                   <div
                     key={participant.id}
@@ -164,7 +165,9 @@ const handleConfetti = () =>{
             </div>
           )}
  
-          <button className={`w-full py-2 ${currentUser.color.bg} rounded-lg hover:from-blue-300 hover:to-blue-300`}
+          <button className={`w-full py-2 font-semibold rounded-lg ${currentUser.color.bg} ${
+                              currentUser.color.bg === 'bg-white' ? 'text-black' : 'text-white'
+                            }`}
                   onClick={toggleColors}
           >
             Change color 🎨
@@ -217,58 +220,63 @@ const handleConfetti = () =>{
               <div className='overflow-auto custom-scrollbar'>
                     <ClanSelector onSelect={handleClanSelect} />
               </div>
+              <Tooltip id="clan-tooltip" className="z-50 max-w-sm !bg-white !text-black !p-4 !rounded-md !shadow-xl"/>
             </div>
           </div>
         </section>
 
-        {/* Chat & Start */}
-        <div className="bg-black/50 md:col-span-7 md:col-start-4 md:row-start-2 p-2 rounded-2xl flex flex-row justify-between ">
+        {/* Facts & Start */}
+        <div className="bg-black/50 md:col-span-7 md:col-start-4 md:row-start-2 px-3 py-2 rounded-2xl flex flex-col sm:flex-row justify-between items-center overflow-y-auto custom-scrollbar">
 
-            <div className="flex-col justify-between w-2/3 rounded-lg overflow-y-auto">
-
-              <div className=" p-2 overflow-y-auto custom-scrollbar bg-white/50 rounded-lg ">
-                <h2 className="font-bold text-xlg mb-2">Fun Facts🐧</h2>
-                <p>- {funFacts[factIndex]}</p>
-              </div>
-
-              <div className="p-2 overflow-x-auto flex flex-row custom-scrollbar justify-between">
-                {["❄️" ,"🐧","❄️","🐧","❄️","🐧","❄️"].map((btn,i) => (
-                  <button
-                    key={i}
-                    onClick={handleConfetti}
-                    className="border w-20 rounded-2xl"
-                  >
-                    {btn}
-                  </button>
-                ))}
-              </div>
+          <div className="flex flex-col w-full md:w-2/3 rounded-lg space-y-2">
+            <div className="p-2 bg-white/50 rounded-lg max-h-40 overflow-y-auto custom-scrollbar">
+              <h2 className="font-bold text-lg mb-2">Fun Facts  ◕‿‿◕ </h2>
+              <p>• {funFacts[factIndex]}</p>
             </div>
 
-            {/* Waiting status */}
-            <div className="rounded-lg flex flex-col items-center justify-center">
-
+            <div className="p-2 flex flex-wrap justify-between gap-2">
+              {["❄️" ,"🐧","❄️","🐧","❄️","🐧","❄️"].map((btn,i) => (
                 <button
-                  onClick={handleStartGame}
-                  disabled={!allPlayersReady}
-                  className={`h-full p-4 rounded-lg font-bold text-xl transition-all ${
-                    allPlayersReady
-                      ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-green-400 hover:from-orange-600 hover:to-amber-600 transform hover:scale-[1.02]'
-                      : 'border-2 text-yellow-400 cursor-not-allowed'
-                  }`}
+                  key={i}
+                  onClick={handleConfetti}
+                  className="border w-20 rounded-2xl bg-white/30 hover:bg-white/50 transition"
                 >
-                  {allPlayersReady 
-                    ? 'Start Game' 
-                    : `Waiting for players (${readyPlayerCount}/${voiceParticipants.length})`}
+                  {btn}
                 </button>
-                
-                {/* <p className="mt-3 text-sm text-center ">
-                  {!isReady 
-                    ? 'Ready up' 
-                    : voiceParticipants.length < 2 
-                      ? 'Need at least 2 players to start' 
-                      : 'Waiting for other players to ready up'}
-                </p> */}
+              ))}
             </div>
+          </div>
+
+            <div className="flex flex-col items-center justify-center w-full md:w-auto">
+              {!isHost ? (
+                    <button
+                      onClick={handleStartGame}
+                      disabled={!allPlayersReady}
+                      className={`w-full px-6 py-4 rounded-lg font-bold text-xl transition-all text-center ${
+                        allPlayersReady
+                          ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-green-400 hover:from-orange-600 hover:to-amber-600 transform hover:scale-[1.02]'
+                          : 'border-2 text-yellow-400 cursor-not-allowed'
+                      }`}
+                    >
+                      {allPlayersReady ? 'Start Game' : `Waiting for players (${readyPlayerCount}/${voiceParticipants.length})`}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleStartGame}
+                      className={`w-full px-6 py-4 rounded-lg font-bold text-xl transition-all text-center ${
+                        isReady
+                          ? 'bg-green-600 text-white hover:bg-green-700'
+                          : 'bg-yellow-500 text-black hover:bg-yellow-600'
+                      }`}
+                    >
+                      {isReady ? 'Ready!' : 'Not Ready'}
+                    </button>
+                  )}
+ 
+                
+ 
+            </div>
+            
         </div>
 
           {/* Anchor nav */}

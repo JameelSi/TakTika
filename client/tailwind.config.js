@@ -6,7 +6,7 @@ export default {
   ],
     safelist: [
       {
-        pattern: /(bg|border)-(orange|red|yellow|green|blue|rose|pink|purple|black|gray|white|lime|emerald|amber|violet|fuchsia)-\d{3}/,
+        pattern: /(bg|border)-(black|white|neutral|red|orange|amber|yellow|lime|green|emerald|cyan|blue|violet|purple|fuchsia|pink|rose)-\d{3}/,
       },
     ],
   theme: {
