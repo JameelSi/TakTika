@@ -55,6 +55,16 @@ export const useGameStore = create((set, get) => ({
     
     // Emit join game event
     socket.emit('game:join', { userId: user.id, username: user.username });
+    socket.on('game:currentPlayers', (players) => {
+      console.log('Current players in game:', players);
+
+      players.forEach((player) => {
+        // Assuming you have a function like `addPlayerToGameState`
+        if (player.id !== user.id) {
+          addPlayerToGameState(player);
+        }
+      });
+    });
   },
   
   // Player actions

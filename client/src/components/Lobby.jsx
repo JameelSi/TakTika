@@ -18,7 +18,7 @@ const Lobby = () => {
   const { voiceParticipants, currentUser, addVoiceParticipant,changeUserColor } = useDiscord();
   const { selectClan, players } = useGameStore();
   const [selectedMap, setSelectedMap] = useState('standard');
-  const [isReady, setIsReady] = useState(false);
+  const { toggleReadyStatus } = useDiscord();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [factIndex, setFactIndex] = useState(0);
 
@@ -32,6 +32,7 @@ const Lobby = () => {
       avatar: null,
       color:"",
       isBot:true,
+      isReady: true,
     };
     addVoiceParticipant(bot);
   };
@@ -56,9 +57,6 @@ const Lobby = () => {
   const handleClanSelect = (clanId) => {
     selectClan(currentUser.id, clanId);
   };
-  const setReady = () =>{
-    setIsReady(prev => !prev);
-  }
 
   const handleStartGame = () => {
     navigate('/game');
@@ -74,8 +72,10 @@ const Lobby = () => {
 
     return () => clearInterval(intervalId); // Clean up on unmount
   }, []);
-  
-  const readyPlayerCount = Object.values(players).filter(player => player.clan).length;
+
+  const setReady = () => toggleReadyStatus(currentUser.id);
+
+  const readyPlayerCount = voiceParticipants.filter(p => p.isReady).length;
   const allPlayersReady = readyPlayerCount === voiceParticipants.length && readyPlayerCount >= 2;
   
 
@@ -107,6 +107,7 @@ const handleConfetti = () =>{
             ) : (
               voiceParticipants.map((participant, i) => {
                 const isHost = i === 0;
+                console.log(participant)
                  return (
                   <div
                     key={participant.id}
@@ -130,12 +131,12 @@ const handleConfetti = () =>{
                         <span className="text-white truncate max-w-48 font-bold">{participant.global_name}</span>
                         <span
                           className={`text-xs mt-1 px-2 py-0.5 rounded-full w-fit  ${
-                            isReady
+                            participant.isReady
                               ? 'bg-green-500/20 text-green-400'
                               : 'bg-yellow-400/30 text-yellow-400 '
                           }`}
                         >
-                          {isReady ? 'Ready!' : 'Selecting...'}
+                          {participant.isReady ? 'Ready!' : 'Selecting...'}
                         </span>
                       </div>
                     </div>
@@ -179,7 +180,7 @@ const handleConfetti = () =>{
         <section className="bg-black/50 rounded-2xl md:col-span-7 md:col-start-4 overflow-auto custom-scrollbar flex flex-row p-3">
 
           {/* Map gallery */}
-          <div className=" flex flex-col items-center justify-between w-[60%] py-3">
+          <div className=" flex flex-col items-center justify-center  w-[60%] py-3">
             <h2 className="text-2xl font-bold mb-4 text-white">Select Battlefield</h2>
             <div className="w-full max-w-xl relative mb-2">
               <Carousel activeIndex={currentIndex} onSelect={handleSelect} interval={null}>
@@ -192,13 +193,13 @@ const handleConfetti = () =>{
                     />
                     
                     <Carousel.Caption >
-                        <h3 className="text-white text-xl font-bold border bg-black/20 rounded">{currentMap.name}</h3>
+                        
                     </Carousel.Caption>
                   </Carousel.Item>
                 ))}
                 
               </Carousel>
-              
+              <h3 className="text-white text-xl font-bold mt-2 text-center">{currentMap.name}</h3>
             </div>
             
           </div>

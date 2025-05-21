@@ -12,21 +12,22 @@ function App({ children }) {
   const { initialize } = useGameStore();
   
   useEffect(() => {
-    if (isReady) {
-      const socket = initSocket();
-      const loadGameData = async () => {
-        try {
-          setTimeout(() => {
-            initialize(socket, currentUser);
-            setIsLoading(false);
-          }, 1000);
-        } catch (error) {
-          console.error('Failed to load game data:', error);
-        }
-      };
-      loadGameData();
-      return () => socket.disconnect();
-    }
+    if (!isReady) return;
+
+    const socket = initSocket();
+
+    const loadGameData = async () => {
+      try {
+        await initialize(socket, currentUser); // Ensure this is async-compatible
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Failed to load game data:', error);
+      }
+    };
+
+    loadGameData();
+
+    return () => socket.disconnect();
   }, [isReady, currentUser, initialize]);
 
   if (!isReady || isLoading) return <LoadingScreen />;

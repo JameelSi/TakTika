@@ -41,6 +41,12 @@ export function DiscordProvider({ children }) {
   setCurrentUser(prev => ({ ...prev, color: newColor }));
 }
 
+  function toggleReadyStatus(userId) {
+    setVoiceParticipants(prev =>
+      prev.map(p => p.id === userId ? { ...p, isReady: !p.isReady } : p)
+    );
+  }
+
   useEffect(() => {
     async function initializeDiscord() {
       try {
@@ -59,7 +65,8 @@ export function DiscordProvider({ children }) {
               discriminator: '0001',
               avatar: null,
               color:colorInfo,
-              isBot: false
+              isBot: false,
+              isReady: false
             };
           setCurrentUser(mockUser);
           setVoiceParticipants([...participants, mockUser]);
@@ -95,18 +102,31 @@ export function DiscordProvider({ children }) {
 
         if (!auth) throw new Error("Authentication failed");
 
-        const userId = auth.user.id;
-        const user = await discordSdk.commands.getUser({ id: userId });
-        const { participants } = await discordSdk.commands.getInstanceConnectedParticipants();
-        const colorInfo = assignColor(participants);
-        const newRealUser = {
-          ...user,
-          ...colorInfo,
-          isBot: false,
-        };
+   const userId = auth.user.id;
+const user = await discordSdk.commands.getUser({ id: userId });
+const { participants } = await discordSdk.commands.getInstanceConnectedParticipants();
 
-        setCurrentUser(newRealUser);
-        setVoiceParticipants([...participants, newRealUser]);
+const colorInfo = assignColor(participants);
+
+const newRealUser = {
+  ...user,
+  ...colorInfo,
+  isBot: false,
+};
+
+// Replace the current user in participants with your enriched version
+const enhancedParticipants = participants.map(p => {
+  if (p.user.id === userId) {
+    return {
+      ...p,
+      ...newRealUser, // add colorInfo and isBot
+    };
+  }
+  return p;
+});
+
+setCurrentUser(newRealUser);
+setVoiceParticipants(enhancedParticipants);
 
         setIsReady(true);
         setDiscord(discordSdk);
@@ -129,6 +149,7 @@ export function DiscordProvider({ children }) {
     voiceParticipants,
     addVoiceParticipant,
     changeUserColor,
+    toggleReadyStatus,
   };
 
   return (
