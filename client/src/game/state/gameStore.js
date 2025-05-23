@@ -12,8 +12,8 @@ export const useGameStore = create((set, get) => ({
   currentUser: null,
   
   // Game settings
-  mapId: 'geojson', // This can be updated to a dynamic value later
-  map: geoMap, // Load the custom map (GeoJSON)
+  mapId: 'geojson',
+  map: geoMap,
   clans: clansData,
   eventTypes: eventsData,
   
@@ -29,7 +29,7 @@ export const useGameStore = create((set, get) => ({
   initialize: (socket, user) => {
     if (get().initialized) return;
     
-    const map = geoMap; // Load the custom map directly for now
+    const map = geoMap;
     const territories = createInitialTerritories(map);
     
     set({
@@ -67,42 +67,9 @@ export const useGameStore = create((set, get) => ({
     });
   },
   
-  // Player actions
-  selectClan: (playerId, clanId) => {
-    const clan = get().clans.find(f => f.id === clanId);
-    if (!clan) return;
-    
-    const updatedPlayers = {
-      ...get().players,
-      [playerId]: {
-        id: playerId,
-        name: get().currentUser?.username || 'Player',
-        clan: clanId,
-        color: clan.color,
-      }
-    };
-    
-    // Initialize resources for this player
-    const updatedResources = {
-      ...get().resources,
-      [playerId]: {
-        food: 10,
-        workers: 5,
-      }
-    };
-    
-    set({ players: updatedPlayers, resources: updatedResources });
-    
-    // Notify server
-    get().socket?.emit('game:selectClan', { 
-      playerId, 
-      clanId 
-    });
-  },
-  
   // Map actions
   setMapId: (mapId) => {
-    const map = geoMap; // Use geoMap directly since you're not using dynamic map imports
+    const map = geoMap;
     set({ mapId, map });
     
     // Reload territories for the new map

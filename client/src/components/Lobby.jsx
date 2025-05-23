@@ -1,6 +1,5 @@
-import React, { useState,useRef,useEffect } from 'react';
-import { useDiscord } from '../discord/DiscordProvider';
-import { useGameStore } from '../game/state/gameStore';
+import React, { useState,useEffect } from 'react';
+import { useSession } from '../providers/SessionProvider';
 import ClanSelector from './ClanSelector';
 import { PlusCircle,Crown } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
@@ -15,38 +14,48 @@ import { Tooltip } from 'react-tooltip';
 const Lobby = () => {
   
   const navigate = useNavigate();
-  const { voiceParticipants, currentUser, addVoiceParticipant,changeUserColor } = useDiscord();
-  const { selectClan, players } = useGameStore();
-  const [selectedMap, setSelectedMap] = useState('standard');
-  const { toggleReadyStatus } = useDiscord();
+  const { sessionPlayers, currentPlayer,changePlayerColor,toggleReadyStatus } = useSession();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [factIndex, setFactIndex] = useState(0);
+  const [showColors, setShowColors] = useState(false);
+  const [showConfetti,setShowConfetti] = useState(false);
+  const currentMap = maps[currentIndex];
+
+  const readyPlayerCount = sessionPlayers.filter(p => p.isReady).length;
+  const allPlayersReady = readyPlayerCount === sessionPlayers.length && readyPlayerCount >= 2;
+
+  const toggleColors = () => setShowColors(!showColors);
 
   const addBot = () => {
-    const playersCount = voiceParticipants.length + 1
+    if (!currentPlayer?.isHost) return;
+    const playersCount = sessionPlayers.length + 1
     const bot = {
-      id: `mockuser${playersCount}`,
-      username: `MockUser${playersCount}`,
-      global_name: `Penguin${playersCount}`,
-      discriminator: `0000${playersCount}`,
-      avatar: null,
-      color:"",
-      isBot:true,
+      id: `bot-${Date.now()}`,
+      username: `ChillBot-${Math.floor(Math.random() * 1000)}`,
+      discriminator: '0000',
+      avatar: 'assets/default_avatar.png',
+      global_name: `ChillBot${playersCount}`,
+      bot: true,
+      isBot: true,
       isReady: true,
+      isHost: false,
+      color: assignColor(sessionPlayers),
+      socketId: null,
     };
-    addVoiceParticipant(bot);
+    sessionPlayers.push(bot)
+  };
+
+   const removeBot = (botId) => {
+    if (!currentPlayer?.isHost) return;
+    // sessionPlayers= sessionPlayers.filter(p => p.id !== botId)
   };
  
   const isMaxPlayers = () => {
-    return voiceParticipants.length >= 6;
+    return sessionPlayers.length >= 6;
   }
-  const [showColors, setShowColors] = useState(false);
-
-  const currentMap = maps[currentIndex];
-  const toggleColors = () => setShowColors(!showColors);
-
+ 
   const changeColor = (color) => {
-     changeUserColor(color);
+     changePlayerColor(color);
      setShowColors(false); // close the picker after selection
   };
 
@@ -55,36 +64,25 @@ const Lobby = () => {
   };
 
   const handleClanSelect = (clanId) => {
-    selectClan(currentUser.id, clanId);
+    selectClan(currentPlayer.id, clanId);
   };
 
   const handleStartGame = () => {
     navigate('/game');
   };
-
-  const isHost = true;
-
+  
+  const handleConfetti = () =>{
+    setShowConfetti(true);
+    setTimeout(()=> setShowConfetti(false),4000);
+  }
 
   useEffect(() => {
     const intervalId = setInterval(() => {
       setFactIndex((prevIndex) => (prevIndex + 1) % funFacts.length);
-    }, 10000); // 10000 ms = 10 seconds
+    }, 8000); // 10000 ms = 10 seconds
 
     return () => clearInterval(intervalId); // Clean up on unmount
   }, []);
-
-  const setReady = () => toggleReadyStatus(currentUser.id);
-
-  const readyPlayerCount = voiceParticipants.filter(p => p.isReady).length;
-  const allPlayersReady = readyPlayerCount === voiceParticipants.length && readyPlayerCount >= 2;
-  
-
-const [showConfetti,setShowConfetti] = useState(false);
-
-const handleConfetti = () =>{
-  setShowConfetti(true);
-  setTimeout(()=> setShowConfetti(false),4000);
-}
 
 
   return (
@@ -98,16 +96,16 @@ const handleConfetti = () =>{
         <aside className="bg-black/50 md:col-span-3 md:row-span-2 rounded-2xl p-3 overflow-auto custom-scrollbar flex flex-col justify-between">
           <h2 className="text-2xl font-bold mb-6 text-white flex items-center">
             <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-            Players Online ({voiceParticipants.length}/6)
+            Players Online ({sessionPlayers.length}/6)
           </h2>
                 
           <div className="flex-1 overflow-y-auto space-y-2">
-            {voiceParticipants.length === 0 ? (
+            {sessionPlayers.length === 0 ? (
               <p> Waiting for players to join .... </p>
             ) : (
-              voiceParticipants.map((participant, i) => {
-                const isHost = i === 0;
-                console.log(participant)
+              sessionPlayers.map((participant, i) => {
+                const isHost = currentPlayer.isHost;
+
                  return (
                   <div
                     key={participant.id}
@@ -117,11 +115,7 @@ const handleConfetti = () =>{
                      <div className="flex items-center space-x-4">
                      <div className="relative w-10 h-10">
                       <img
-                        src={
-                          participant.avatar
-                            ? `https://cdn.discordapp.com/avatars/${participant.id}/${participant.avatar}.png`
-                            : 'assets/default_avatar.png'
-                        }
+                        src={ participant.avatar }
                         alt="Avatar"
                         className="w-10 h-10 rounded-full"
                       />
@@ -157,7 +151,7 @@ const handleConfetti = () =>{
           </div>
           {showColors && (
             <div className="flex flex-wrap gap-2 p-2 shadow-inner justify-content rounded bg-white/20 border-t border-r border-l ">
-              {getAvailableColors(voiceParticipants).map((color) => (
+              {getAvailableColors(sessionPlayers).map((color) => (
             <button
               key={color.color}
               className={`${color.bg} w-8 h-8 rounded-full shadow-md hover:shadow-lg transform hover:scale-150 transition duration-300 ease-in-out`}
@@ -167,8 +161,8 @@ const handleConfetti = () =>{
             </div>
           )}
  
-          <button className={`w-full py-2 font-semibold rounded-lg ${currentUser.color.bg} ${
-                              currentUser.color.bg === 'bg-white' ? 'text-black' : 'text-white'
+          <button className={`w-full py-2 font-semibold rounded-lg ${currentPlayer.color.bg} ${
+                              currentPlayer.color.bg === 'bg-white' ? 'text-black' : 'text-white'
                             }`}
                   onClick={toggleColors}
           >
@@ -191,7 +185,6 @@ const handleConfetti = () =>{
                       src={map.imageUrl}
                       alt={map.name}
                     />
-                    
                     <Carousel.Caption >
                         
                     </Carousel.Caption>
@@ -255,7 +248,7 @@ const handleConfetti = () =>{
           </div>
 
             <div className="w-full h-full">
-              {isHost ? (
+              {currentPlayer.isHost ? (
                     <button
                       onClick={handleStartGame}
                       disabled={allPlayersReady}
@@ -265,12 +258,12 @@ const handleConfetti = () =>{
                           : 'border-2 text-yellow-400 cursor-not-allowed'
                       }`}
                     >
-                      {allPlayersReady ? 'Start Game' : `Waiting for players (${readyPlayerCount}/${voiceParticipants.length})`}
+                      {allPlayersReady ? 'Start Game' : `Waiting for players (${readyPlayerCount}/${sessionPlayers.length})`}
                     </button>
                     
                   ) : (
                     <button
-                      onClick={setReady}
+                      onClick={toggleReadyStatus}
                       className={`w-full h-full min-h-20 rounded-lg font-bold text-xl transition-all text-center  ${
                         isReady
                           ? 'bg-green-500 text-white hover:bg-green-600'

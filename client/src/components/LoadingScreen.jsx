@@ -16,20 +16,30 @@ const LoadingScreen = () => {
         setBgLoaded(true); 
       };
 
-    const interval = setInterval(() => {
+    const progressInterval = setInterval(() => {
       setProgress((prevProgress) => {
-        const newProgress = prevProgress + Math.random() * 15;
-        return newProgress >= 100 ? 100 : newProgress;
+        const newProgress = prevProgress + Math.random() * 1;
+        return newProgress >= 99 ? 99 : newProgress;
       });
-      
-      setLoadingText(loadingMessages[Math.floor(Math.random() * loadingMessages.length)]);
-    }, 1000);
+    }, 50); 
+
+    const messageInterval = setInterval(() => {
+      setLoadingText(
+        loadingMessages[Math.floor(Math.random() * loadingMessages.length)]
+      );
+    }, 2500); 
+
     
-    return () => clearInterval(interval);
+    const clearIntervals = () => {
+      clearInterval(progressInterval);
+      clearInterval(messageInterval);
+    };
+      
+    return clearIntervals;
   }, []);
   
   if (!bgLoaded) {
-    return null; // Or a solid color fallback while loading
+    return <div className="bg-white"></div>;
   }
 
   return (

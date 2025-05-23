@@ -21,7 +21,3 @@ export function isColorAvailable(participants, color, excludeId = null) {
     .map(p => p.color.color);
   return !usedByOthers.includes(color);
 }
-
-export function getColorInfo(colorKey) {
-  return colors.find(c => c.color === colorKey) || null;
-}

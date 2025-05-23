@@ -26,82 +26,69 @@ const io = new Server(server, {
 });
 
 // Game state
-const games = {};
-const players = {};
+const activeGames = new Map();
+const playersGamesMap = new Map();
+const MAX_PLAYERS = 6
 
-// Socket.IO connection handler
+// Helper function to create a new game
+const createGame = (hostId, channelID) => ({
+  id: uuidv4(),
+  host: hostId,
+  channelID: channelID,
+  players: new Map(),
+  createdAt: Date.now(),
+  currentTurn: 1,
+  currentPlayerId: null,
+  timeOfDay: 'day',
+  startedAt: null,
+})
+
+// Helper function to find available game
+const findAvailableGame = (channelID) => {
+  for (const [gameId, game] of activeGames.entries()) {
+    if (game.channelID === channelID && game.players.size < MAX_PLAYERS) {
+      return game
+    }
+  }
+  return null
+}
+
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);
-  
   // Join game
-  socket.on('game:join', ({ userId, username }) => {
-    console.log(`Player ${username} (${userId}) joined`);
+  socket.on('game:join', ({ player,channelID }) => {
     
-    // Add player to players list
-    players[userId] = {
-      id: userId,
-      username,
-      socketId: socket.id,
-      gameId: null,
-    };
-    
-    // Check if a game is available or create a new one
-    let gameId = Object.keys(games).find(id => games[id].players.length < 4);
-    
-    if (!gameId) {
-      // Create new game
-      gameId = uuidv4();
-      games[gameId] = {
-        id: gameId,
-        players: [],
-        territories: [],
-        currentTurn: 1,
-        currentPlayerId: null,
-        timeOfDay: 'day',
-        startedAt: null,
-      };
+    // find or create a game for the player
+    let game = findAvailableGame(channelID)
+    if (!game) {
+      game = createGame(socket.id, channelID)
+      player.isHost = true
+      activeGames.set(game.id, game)
     }
-    
+
     // Add player to game
-    games[gameId].players.push(userId);
-    players[userId].gameId = gameId;
-    
-    // Join socket room for this game
-    socket.join(gameId);
+    player.socketId = socket.id;
+    game.players.set(socket.id, player)
+    playersGamesMap.set(socket.id,game.id)
+    socket.join(game.id)
     
     // Notify other players
-    socket.to(gameId).emit('game:playerJoined', {
-      playerId: userId,
-      username,
-    });
+    io.to(game.id).emit('game:playerJoined', {newPlayer: player, players: Array.from(game.players.values())} )
+
+    console.log(`Player ${player.username} (${player.id}) joined game ${game.id}`);
+  });
+
+  // Player status update
+  socket.on('player:updateStatus', ({player}) => {
+    const playerCurrentGame = activeGames.get(playersGamesMap.get(socket.id))
+    if (!playerCurrentGame) return;
+    playerCurrentGame.players.set(socket.id, player)
     
-    console.log(`Player ${username} joined game ${gameId}`);
+    // Broadcast to all players
+    io.to(playerCurrentGame.id).emit('player:statusChanged', Array.from(playerCurrentGame.players.values()));
   });
   
-  // Select clan
-  socket.on('game:selectClan', ({ playerId, clanId }) => {
-    const player = players[playerId];
-    if (!player) return;
-    
-    const gameId = player.gameId;
-    if (!gameId || !games[gameId]) return;
-    
-    // Update game state and broadcast to all players
-    io.to(gameId).emit('game:playerSelectClan', {
-      playerId,
-      clanId,
-    });
-    
-    // If this is the first player to select a clan, make them the current player
-    if (!games[gameId].currentPlayerId) {
-      games[gameId].currentPlayerId = playerId;
-      io.to(gameId).emit('game:turn', {
-        turn: games[gameId].currentTurn,
-        playerId,
-      });
-    }
-  });
-  
+  /* GAME LOGIC
   // End turn
   socket.on('game:endTurn', ({ nextPlayerId, newTurn }) => {
     const player = Object.values(players).find(p => p.socketId === socket.id);
@@ -182,34 +169,33 @@ io.on('connection', (socket) => {
       resources,
     });
   });
-  
+
+  */
+ 
   // Disconnect handler
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id);
-    
-    // Find player by socket ID
-    const player = Object.values(players).find(p => p.socketId === socket.id);
-    if (!player) return;
-    
+    let playerGameId = playersGamesMap.get(socket.id)
+    let playerCurrentGame = activeGames.get(playerGameId)
+    if(!playerCurrentGame) return
     // Remove player from game
-    const gameId = player.gameId;
-    if (gameId && games[gameId]) {
-      games[gameId].players = games[gameId].players.filter(id => id !== player.id);
-      
-      // Notify other players
-      socket.to(gameId).emit('game:playerLeft', {
-        playerId: player.id,
-        username: player.username,
-      });
-      
-      // If no players left, remove the game
-      if (games[gameId].players.length === 0) {
-        delete games[gameId];
+    const player = playerCurrentGame.players.get(socket.id)
+    if(!player) return
+    // If player was host, reassign host
+    if (player.isHost) {
+      const [newHostId] = playerCurrentGame.players.keys();
+      if (playerCurrentGame.players.size === 0)
+        activeGames.delete(playerGameId)
+      else{
+        playerCurrentGame.host = newHostId || null;
+        const newHost = playerCurrentGame.players.get(newHostId);
+        newHost.isHost=true
       }
     }
-    
-    // Remove player from players list
-    delete players[player.id];
+    playerCurrentGame.players.delete(socket.id)
+    playersGamesMap.delete(socket.id);
+
+    io.to(playerGameId).emit('game:playerLeft', Array.from(playerCurrentGame.players.values()))
   });
 });
 
@@ -219,19 +205,7 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
-app.get('/api/games', (req, res) => {
-  console.log('New request api/games:');
-  res.status(200).json({
-    games: Object.values(games).map(game => ({
-      id: game.id,
-      playerCount: game.players.length,
-      started: !!game.startedAt,
-    })),
-  });
-});
-
 app.post("/api/token", async (req, res) => {
-console.log('New request api/token:');
   // Exchange the code for an access_token
   const response = await fetch(`https://discord.com/api/oauth2/token`, {
     method: "POST",
@@ -245,11 +219,7 @@ console.log('New request api/token:');
       code: req.body.code,
     }),
   });
-
-  // Retrieve the access_token from the response
   const { access_token } = await response.json();
-
-  // Return the access_token to our client as { access_token: "..."}
   res.send({access_token});
 });
 

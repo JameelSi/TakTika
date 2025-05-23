@@ -1,39 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useDiscord } from '../discord/DiscordProvider';
-import { initSocket } from '../socket';
-import { clansData } from '../game/data/clans';
-import { eventsData } from '../game/data/events';
-import { createInitialTerritories } from '../game/utils/mapUtils';
-import geoMap from '../game/data/standard-map.json';
 
-const GameContext = createContext(null);
 
-export const useGame = () => {
-  const context = useContext(GameContext);
-  if (!context) {
-    throw new Error('useGame must be used within a GameProvider');
-  }
-  return context;
-};
+const GameContext = createContext({
+  discord: null,
+  discordReady: false,
+  currentUser: null,
+  channelID: null,
+});
 
-export const GameProvider = ({ children }) => {
-  const { currentUser } = useDiscord();
-  const [gameState, setGameState] = useState({
-    initialized: false,
-    gameId: null,
-    socket: null,
-    currentUser: null,
-    mapId: 'geojson',
-    map: null,
-    clans: clansData,
-    eventTypes: eventsData,
-    currentTurn: 1,
-    currentPlayerId: null,
-    timeOfDay: 'day',
-    players: {},
-    territories: [],
-    resources: {},
-  });
+
+export function useGame() {
+  return useContext(GameContext);
+}
+export const SocketProvider = ({ children }) => {
+
+  const { discordReady,currentUser,channelID } = useDiscord();
+
 
   const parseTerritoriesFromGeoJSON = (geojson) => {
     return geojson.features.map((feature) => ({
@@ -133,11 +115,6 @@ export const GameProvider = ({ children }) => {
     gameState.socket?.emit('game:endTurn', { nextPlayerId, newTurn });
   };
 
-  const toggleTimeOfDay = () => {
-    const newTimeOfDay = gameState.timeOfDay === 'day' ? 'night' : 'day';
-    setGameState(prev => ({ ...prev, timeOfDay: newTimeOfDay }));
-    gameState.socket?.emit('game:toggleTime', { timeOfDay: newTimeOfDay });
-  };
 
   const value = {
     ...gameState,
@@ -145,7 +122,6 @@ export const GameProvider = ({ children }) => {
     selectClan,
     setMapId,
     endTurn,
-    toggleTimeOfDay,
   };
 
   return (

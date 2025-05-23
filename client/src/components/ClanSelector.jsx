@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useGameStore } from '../game/state/gameStore';
+import clans from '../game/data/clans.json';
 
 const ClanSelector = ({ onSelect }) => {
-  const { clans } = useGameStore();
+  
   const [selectedClan, setSelectedClan] = useState(null);
   
   const handleSelect = (clan) => {

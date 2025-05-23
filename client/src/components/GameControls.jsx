@@ -7,7 +7,6 @@ const GameControls = ({ onSpinWheel }) => {
     currentPlayerId, 
     endTurn, 
     timeOfDay, 
-    toggleTimeOfDay,
     players
   } = useGameStore();
   
@@ -27,7 +26,6 @@ const GameControls = ({ onSpinWheel }) => {
         <div className="flex space-x-2">
           <button 
             className="btn btn-primary text-sm py-1"
-            onClick={toggleTimeOfDay}
           >
             Toggle Time
           </button>
