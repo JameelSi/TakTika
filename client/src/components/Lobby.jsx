@@ -7,7 +7,7 @@ import maps from '../game/data/maps-data.json'
 import Carousel from 'react-bootstrap/Carousel';
 import Confetti from 'react-confetti';
 import funFacts from '../game/data/funFacts.json'
-import { getAvailableColors } from '../game/utils/colorManager';
+import { getAvailableColors,assignColor } from '../game/utils/colorManager';
 import 'react-tooltip/dist/react-tooltip.css';
 import { Tooltip } from 'react-tooltip';
 
@@ -28,13 +28,12 @@ const Lobby = () => {
 
   const addBot = () => {
     if (!currentPlayer?.isHost) return;
-    const playersCount = sessionPlayers.length + 1
     const bot = {
       id: `bot-${Date.now()}`,
       username: `ChillBot-${Math.floor(Math.random() * 1000)}`,
       discriminator: '0000',
       avatar: 'assets/default_avatar.png',
-      global_name: `ChillBot${playersCount}`,
+      global_name: `ChillBot${sessionPlayers.length + 1}`,
       bot: true,
       isBot: true,
       isReady: true,
@@ -42,7 +41,6 @@ const Lobby = () => {
       color: assignColor(sessionPlayers),
       socketId: null,
     };
-    sessionPlayers.push(bot)
   };
 
    const removeBot = (botId) => {
@@ -104,50 +102,50 @@ const Lobby = () => {
               <p> Waiting for players to join .... </p>
             ) : (
               sessionPlayers.map((participant, i) => {
-                const isHost = currentPlayer.isHost;
-
                  return (
                   <div
                     key={participant.id}
                     className={`flex items-center justify-between p-3 border-2 ${participant.color.border} rounded-lg`}
                   >
-      
-                     <div className="flex items-center space-x-4">
-                     <div className="relative w-10 h-10">
-                      <img
-                        src={ participant.avatar }
-                        alt="Avatar"
-                        className="w-10 h-10 rounded-full"
-                      />
-                      {isHost &&<Crown size={18} className="absolute -top-1 -right-1 text-yellow-400 drop-shadow"/>}
-                    </div>
-                       <div className="flex flex-col ">
-                        <span className="text-white truncate max-w-48 font-bold">{participant.global_name}</span>
-                        <span
-                          className={`text-xs mt-1 px-2 py-0.5 rounded-full w-fit  ${
-                            participant.isReady
-                              ? 'bg-green-500/20 text-green-400'
-                              : 'bg-yellow-400/30 text-yellow-400 '
-                          }`}
-                        >
-                          {participant.isReady ? 'Ready!' : 'Selecting...'}
-                        </span>
+                    <div className="flex items-center space-x-4">
+                      <div className="relative w-10 h-10">
+                        <img
+                          src={ participant.avatar }
+                          alt="Avatar"
+                          className="w-10 h-10 rounded-full"
+                        />
+                        {participant.isHost &&<Crown size={18} className="absolute -top-1 -right-1 text-yellow-400 drop-shadow"/>}
                       </div>
+                      <div className="flex flex-col ">
+                      <span className="text-white truncate max-w-48 font-bold">{participant.global_name}</span>
+                      {!participant.isHost &&
+                      <span
+                        className={`text-xs mt-1 px-2 py-0.5 rounded-full w-fit  ${
+                          participant.isReady
+                            ? 'bg-green-500/20 text-green-400'
+                            : 'bg-yellow-400/30 text-yellow-400 '
+                        }`}
+                      >
+                        {participant.isReady ? 'Ready!' : 'Not Ready...'}
+                      </span>
+                      }
                     </div>
-                    {isHost && <div className="px-2 bg-ice text-xs text-yellow-600 rounded-full font-semibold">Host</div>}
+                  </div>
+                    {participant.isHost && <div className="px-2 bg-ice text-xs text-yellow-600 rounded-full font-semibold">Host</div>}
                   </div>
                 );
               })
             )}
-
-            <button className={`w-full mt-4 py-2 bg-white/50  text-white font-semibold hover:bg-gray-800 rounded-lg flex items-center gap-x-2 border-2 ${
-                    isMaxPlayers() ? 'hidden' : '' }`}
-                    onClick={addBot}
-                    disabled={isMaxPlayers()}
-            >
-              <PlusCircle size={32}/>
-              ADD BOT
-              </button>
+            {currentPlayer.isHost &&
+              <button className={`w-full mt-4 py-2 bg-white/50  text-white font-semibold hover:bg-gray-800 rounded-lg flex items-center gap-x-2 border-2 ${
+                      isMaxPlayers() ? 'hidden' : '' }`}
+                      onClick={addBot}
+                      disabled={isMaxPlayers()}
+              >
+                <PlusCircle size={32}/>
+                ADD BOT
+                </button>
+            }
           </div>
           {showColors && (
             <div className="flex flex-wrap gap-2 p-2 shadow-inner justify-content rounded bg-white/20 border-t border-r border-l ">
@@ -251,26 +249,26 @@ const Lobby = () => {
               {currentPlayer.isHost ? (
                     <button
                       onClick={handleStartGame}
-                      disabled={allPlayersReady}
+                      disabled={!allPlayersReady}
                       className={`w-full h-full min-h-20 rounded-lg font-bold text-lg transition-all text-center ${
                         allPlayersReady
                           ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-green-400'
                           : 'border-2 text-yellow-400 cursor-not-allowed'
                       }`}
                     >
-                      {allPlayersReady ? 'Start Game' : `Waiting for players (${readyPlayerCount}/${sessionPlayers.length})`}
+                      {allPlayersReady ? 'Start Game' : `Waiting for players (${readyPlayerCount}/${sessionPlayers.length<2?2:sessionPlayers.length})`}
                     </button>
                     
                   ) : (
                     <button
                       onClick={toggleReadyStatus}
                       className={`w-full h-full min-h-20 rounded-lg font-bold text-xl transition-all text-center  ${
-                        isReady
+                        currentPlayer.isReady
                           ? 'bg-green-500 text-white hover:bg-green-600'
-                          : 'bg-yellow-400 text-white hover:bg-yellow-500'
+                          : 'bg-orange-500 text-white hover:bg-orange-600'
                       }`}
                     >
-                      {isReady ? 'Ready!' : 'Not Ready'}
+                      {currentPlayer.isReady ? 'Ready!' : 'Not Ready'}
                     </button>
                   )}
  

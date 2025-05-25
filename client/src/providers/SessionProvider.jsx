@@ -35,33 +35,33 @@ export const SessionProvider = ({ children }) => {
     s.connect();
     s.on('connect', () => {
        setSocket(s);
-       setCurrentPlayer(currentUser);
        emitEvent('game:join', {player: currentUser,channelID: channelID});
     });
-    
+  
+
+    const unsubLeft = subscribeToEvent('game:playerLeft', ({players}) => {
+      setSessionPlayers(players);
+    });
+
 
     const unsubJoin = subscribeToEvent('game:playerJoined', ({newPlayer, players}) => {
-      if(newPlayer.id === currentUser.id){
-        newPlayer.color = assignColor(players)
-        s.emit('player:updateStatus', {newPlayer});
-        setCurrentPlayer(newPlayer)
-      }
-      setSessionPlayers(players);
-    });
+        if(newPlayer.id === currentUser.id){
+          newPlayer.color = assignColor(players)
+          s.emit('player:updateStatus', {player: newPlayer});
+          setCurrentPlayer(newPlayer)
+        }
+      })
 
-    const unsubStatus = subscribeToEvent('player:statusChanged', (players) => {
-      setSessionPlayers(players);
-      const updated = players.find(p => p.id === currentUser.id);
+    const unsubStat= subscribeToEvent('player:statusChanged', ({players}) => {
+      const updated = sessionPlayers.find(p => p.id === currentUser.id);
       if (updated) setCurrentPlayer(updated);
-    });
-
-    const unsubLeft = subscribeToEvent('game:playerLeft', (players) => {
       setSessionPlayers(players);
     });
+
 
     const unsubAll = () => {
       unsubJoin();
-      unsubStatus();
+      unsubStat();
       unsubLeft();
     }
 
@@ -69,21 +69,23 @@ export const SessionProvider = ({ children }) => {
        emitEvent('game:join', {player: currentUser,channelID: channelID});
     });
 
-    if(sessionPlayers && currentPlayer)
-      setSessionReady(true);
     return () => {
       unsubAll();
       s.disconnect();
     };
 
-  }, [discordReady, currentUser, channelID]);
+  }, [discordReady]);
 
+  useEffect(() => {
+    if (currentPlayer && sessionPlayers.length > 0)
+      setSessionReady(true);
+  }, [currentPlayer, sessionPlayers]);
 
   const changePlayerColor = (newColor) => {
     if (!currentPlayer) return;
     const updatedPlayer = { ...currentPlayer, color: newColor };
     setCurrentPlayer(updatedPlayer);
-    socket?.emit('player:updateStatus', { player: updatedPlayer });
+    socket.emit('player:updateStatus', { player: updatedPlayer });
   };
 
   const addBotPlayer = () => {
@@ -109,7 +111,7 @@ export const SessionProvider = ({ children }) => {
     if (!currentPlayer) return;
     const updatedPlayer = { ...currentPlayer, isReady: !currentPlayer.isReady };
     setCurrentPlayer(updatedPlayer);
-    socket?.emit('player:updateStatus', { player: updatedPlayer });
+    socket.emit('player:updateStatus', { player: updatedPlayer });
   };
 
 

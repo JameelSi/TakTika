@@ -81,13 +81,69 @@ io.on('connection', (socket) => {
   // Player status update
   socket.on('player:updateStatus', ({player}) => {
     const playerCurrentGame = activeGames.get(playersGamesMap.get(socket.id))
-    if (!playerCurrentGame) return;
     playerCurrentGame.players.set(socket.id, player)
-    
     // Broadcast to all players
-    io.to(playerCurrentGame.id).emit('player:statusChanged', Array.from(playerCurrentGame.players.values()));
+    io.to(playerCurrentGame.id).emit('player:statusChanged', {players: Array.from(playerCurrentGame.players.values())});
   });
   
+  // Disconnect handler
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+    let playerGameId = playersGamesMap.get(socket.id)
+    let playerCurrentGame = activeGames.get(playerGameId)
+    if(!playerCurrentGame) return
+    // Remove player from game
+    const player = playerCurrentGame.players.get(socket.id)
+    if(!player) return
+    // If player was host, reassign host
+    if (player.isHost) {
+      const [newHostId] = playerCurrentGame.players.keys();
+      if (playerCurrentGame.players.size === 0)
+        activeGames.delete(playerGameId)
+      else{
+        playerCurrentGame.host = newHostId || null;
+        const newHost = playerCurrentGame.players.get(newHostId);
+        newHost.isHost=true
+      }
+    }
+    playerCurrentGame.players.delete(socket.id)
+    playersGamesMap.delete(socket.id);
+
+    io.to(playerGameId).emit('game:playerLeft', {players: Array.from(playerCurrentGame.players.values())})
+  });
+});
+
+// API endpoints
+app.get('/api/health', (req, res) => {
+  console.log('New request health:');
+  res.status(200).json({ status: 'ok' });
+});
+
+app.post("/api/token", async (req, res) => {
+  // Exchange the code for an access_token
+  const response = await fetch(`https://discord.com/api/oauth2/token`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      client_id: process.env.VITE_DISCORD_CLIENT_ID,
+      client_secret: process.env.DISCORD_CLIENT_SECRET,
+      grant_type: "authorization_code",
+      code: req.body.code,
+    }),
+  });
+  const { access_token } = await response.json();
+  res.send({access_token});
+});
+
+// Start server
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+
   /* GAME LOGIC
   // End turn
   socket.on('game:endTurn', ({ nextPlayerId, newTurn }) => {
@@ -171,60 +227,3 @@ io.on('connection', (socket) => {
   });
 
   */
- 
-  // Disconnect handler
-  socket.on('disconnect', () => {
-    console.log('Client disconnected:', socket.id);
-    let playerGameId = playersGamesMap.get(socket.id)
-    let playerCurrentGame = activeGames.get(playerGameId)
-    if(!playerCurrentGame) return
-    // Remove player from game
-    const player = playerCurrentGame.players.get(socket.id)
-    if(!player) return
-    // If player was host, reassign host
-    if (player.isHost) {
-      const [newHostId] = playerCurrentGame.players.keys();
-      if (playerCurrentGame.players.size === 0)
-        activeGames.delete(playerGameId)
-      else{
-        playerCurrentGame.host = newHostId || null;
-        const newHost = playerCurrentGame.players.get(newHostId);
-        newHost.isHost=true
-      }
-    }
-    playerCurrentGame.players.delete(socket.id)
-    playersGamesMap.delete(socket.id);
-
-    io.to(playerGameId).emit('game:playerLeft', Array.from(playerCurrentGame.players.values()))
-  });
-});
-
-// API endpoints
-app.get('/api/health', (req, res) => {
-  console.log('New request health:');
-  res.status(200).json({ status: 'ok' });
-});
-
-app.post("/api/token", async (req, res) => {
-  // Exchange the code for an access_token
-  const response = await fetch(`https://discord.com/api/oauth2/token`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      client_id: process.env.VITE_DISCORD_CLIENT_ID,
-      client_secret: process.env.DISCORD_CLIENT_SECRET,
-      grant_type: "authorization_code",
-      code: req.body.code,
-    }),
-  });
-  const { access_token } = await response.json();
-  res.send({access_token});
-});
-
-// Start server
-const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});

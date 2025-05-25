@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { DiscordSDK } from '@discord/embedded-app-sdk';
-
+import { v4 as uuidv4 } from 'uuid';
 
 
 const DiscordContext = createContext({
@@ -29,8 +29,8 @@ export function DiscordProvider({ children }) {
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
           // Set mock user data when running locally
           const mockUser = {
-              id: 'localuser',
-              username: 'localuser',
+              id: `localuser-${uuidv4()}`,
+              username: `localuser-${uuidv4()}`,
               discriminator: '0001',
               avatar: 'assets/default_avatar.png',
               global_name: 'Jimmy-Local',
