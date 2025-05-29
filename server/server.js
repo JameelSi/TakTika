@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 
 
 // Load environment variables
-dotenv.config({ path: "../.env" });
+dotenv.config();
 
 // Initialize Express app
 const app = express();
@@ -63,6 +63,7 @@ io.on('connection', (socket) => {
     if (!game) {
       game = createGame(socket.id, channelID)
       player.isHost = true
+      player.isReady = true
       activeGames.set(game.id, game)
     }
 
@@ -75,7 +76,7 @@ io.on('connection', (socket) => {
     // Notify other players
     io.to(game.id).emit('game:playerJoined', {newPlayer: player, players: Array.from(game.players.values())} )
 
-    console.log(`Player ${player.username} (${player.id}) joined game ${game.id}`);
+    console.log(`>Player: ${player.username}(ID: ${player.id}) Joined: ${game.id} (Channel: ${channelID})`);
   });
 
   // Player status update
@@ -94,20 +95,22 @@ io.on('connection', (socket) => {
     if(!playerCurrentGame) return
     // Remove player from game
     const player = playerCurrentGame.players.get(socket.id)
+    playerCurrentGame.players.delete(socket.id)
+    playersGamesMap.delete(socket.id);
     if(!player) return
     // If player was host, reassign host
     if (player.isHost) {
-      const [newHostId] = playerCurrentGame.players.keys();
-      if (playerCurrentGame.players.size === 0)
+      const newHostId = playerCurrentGame.players.keys().next().value;
+      if (!newHostId){
         activeGames.delete(playerGameId)
+      }
       else{
-        playerCurrentGame.host = newHostId || null;
+        playerCurrentGame.host = newHostId;
         const newHost = playerCurrentGame.players.get(newHostId);
         newHost.isHost=true
+        newHost.isReady=true
       }
     }
-    playerCurrentGame.players.delete(socket.id)
-    playersGamesMap.delete(socket.id);
 
     io.to(playerGameId).emit('game:playerLeft', {players: Array.from(playerCurrentGame.players.values())})
   });

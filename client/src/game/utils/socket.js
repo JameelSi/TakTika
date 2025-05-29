@@ -5,8 +5,7 @@ let socket;
 export const initSocket = () => {
 
   if (!socket) {
-    const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
-    socket = io(serverUrl, {
+    socket = io(window.location.origin, {
       transports: ['websocket'],
       autoConnect: false,
       reconnection: true,

@@ -40,6 +40,8 @@ export const SessionProvider = ({ children }) => {
   
 
     const unsubLeft = subscribeToEvent('game:playerLeft', ({players}) => {
+      const updated = players.find(p => p.id === currentUser.id);
+      if (updated) setCurrentPlayer(updated);
       setSessionPlayers(players);
     });
 
@@ -53,7 +55,7 @@ export const SessionProvider = ({ children }) => {
       })
 
     const unsubStat= subscribeToEvent('player:statusChanged', ({players}) => {
-      const updated = sessionPlayers.find(p => p.id === currentUser.id);
+      const updated = players.find(p => p.id === currentUser.id);
       if (updated) setCurrentPlayer(updated);
       setSessionPlayers(players);
     });

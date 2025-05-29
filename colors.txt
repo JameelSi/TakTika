@@ -17,16 +17,3 @@
 | Antarctic Sky     | Dark Blue       | #034A6F | Dark, crisp blue for contrast       |
 | Highlight Accent  | Ice Blue / Cyan | #4DD0E1 | Bright icy accent (for buttons etc) |
 | Rock / Ice cracks | Slate Gray      | #708090 | Slightly darker gray/blue           |
-
-
-  function changeUserColor(newColor) {
-  if (!isColorAvailable(voiceParticipants, newColor.color, currentUser.id)) {
-    console.warn("Color taken");
-    return;
-  }
-  setVoiceParticipants(prev =>
-    prev.map(p => (p.id === currentUser.id ? { ...p, color: newColor } : p))
-  );
-
-  setCurrentUser(prev => ({ ...prev, color: newColor }));
-}

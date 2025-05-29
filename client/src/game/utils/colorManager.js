@@ -1,12 +1,12 @@
 import colors from '../data/playersColors.json'
 
 export function getUsedColors(participants) {
-  return participants.map(p => p.color).filter(Boolean);
+  return participants.map(p => p.color?.color).filter(Boolean);
 }
 
 export function getAvailableColors(participants) {
   const used = getUsedColors(participants);
-  return colors.filter(c => !used.includes(c));
+  return colors.filter(c => !used.includes(c.color));
 }
 
 export function assignColor(participants) {

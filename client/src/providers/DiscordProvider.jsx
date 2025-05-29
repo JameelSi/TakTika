@@ -42,7 +42,8 @@ export function DiscordProvider({ children }) {
               socketId: null,
             };
           setCurrentUser(mockUser);
-          setChannelID("localChannel")
+          setChannelID("1374805411307327619")
+          //wordlwide channelId 1312084142954905620
           setDiscordReady(true);
           return;
         }
@@ -64,7 +65,7 @@ export function DiscordProvider({ children }) {
           scope: ["identify", "guilds", "applications.commands"],
         });
         
-        const response = await fetch("/.proxy/api/token", {
+        const response = await fetch("/api/token", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
