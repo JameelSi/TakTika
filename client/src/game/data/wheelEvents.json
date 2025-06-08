@@ -3,7 +3,7 @@
     "id": "food_surplus",
     "name": "Food Surplus",
     "description": "A lucky find! All colonies gain +5 food resources.",
-    "color": "#68D391",
+    "color": "#AEE1F9",
     "effect": {
       "type": "resource",
       "target": "all",
@@ -15,7 +15,7 @@
     "id": "worker_revolt",
     "name": "Worker Revolt",
     "description": "Workers are restless. Each colony loses 2 worker units.",
-    "color": "#F56565",
+    "color": "#84C7DB",
     "effect": {
       "type": "resource",
       "target": "all",
@@ -27,7 +27,7 @@
     "id": "territory_collapse",
     "name": "Territory Collapse",
     "description": "A random territory becomes neutral due to environmental disaster.",
-    "color": "#9F7AEA",
+    "color": "#5DA9C2",
     "effect": {
       "type": "territory",
       "target": "random",
@@ -38,7 +38,7 @@
     "id": "predator_attack",
     "name": "Predator Attack",
     "description": "A predator attacks! The player with the most territories loses one at random.",
-    "color": "#F6AD55",
+    "color": "#96C0D4",
     "effect": {
       "type": "territory",
       "target": "most_territories",
@@ -49,7 +49,7 @@
     "id": "resource_boom",
     "name": "Resource Boom",
     "description": "A resource boom occurs. Double the resource production for all colonies next turn.",
-    "color": "#4FD1C5",
+    "color": "#D6E8EE",
     "effect": {
       "type": "production",
       "target": "all",
@@ -61,7 +61,7 @@
     "id": "queen_directive",
     "name": "Queen Directive",
     "description": "The Queen issues a directive. All players must attack this turn or lose 3 food.",
-    "color": "#FC8181",
+    "color": "#AEE1F9",
     "effect": {
       "type": "action",
       "target": "all",
@@ -76,7 +76,7 @@
     "id": "weather_change",
     "name": "Weather Change",
     "description": "The weather shifts dramatically. Time of day toggles immediately.",
-    "color": "#90CDF4",
+    "color": "#8BA0A9",
     "effect": {
       "type": "game",
       "action": "toggle_time"
@@ -86,7 +86,7 @@
     "id": "lucky_find",
     "name": "Lucky Find",
     "description": "The current player discovers a hidden cache and gains 3 workers.",
-    "color": "#FBD38D",
+    "color": "#84C7DB",
     "effect": {
       "type": "resource",
       "target": "current",

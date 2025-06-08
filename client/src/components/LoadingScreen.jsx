@@ -44,7 +44,7 @@ const LoadingScreen = () => {
 
   return (
     <div className={`fixed inset-0 bg-loading-bg bg-cover bg-center transition-opacity duration-500 ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}>
-      <div className="min-h-screen w-full bg-black/10 backdrop-blur-sm flex flex-col items-center justify-center px-4 bg-black/40">
+      <div className="min-h-screen w-full backdrop-blur-sm flex flex-col items-center justify-center px-4 bg-black/40">
         <div className="w-full max-w-md text-center">
 
           <h1 className="text-8xl font-bold text-center text-ice">Tak<span className='text-sky'>Tika</span></h1>

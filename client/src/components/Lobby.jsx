@@ -62,11 +62,11 @@ const Lobby = () => {
   };
 
   const handleClanSelect = (clanId) => {
-    selectClan(currentPlayer.id, clanId);
+    // selectClan(currentPlayer.id, clanId);
   };
 
   const handleStartGame = () => {
-    navigate('/game');
+    navigate('/startGame');
   };
   
   const handleConfetti = () =>{
@@ -77,9 +77,9 @@ const Lobby = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setFactIndex((prevIndex) => (prevIndex + 1) % funFacts.length);
-    }, 8000); // 10000 ms = 10 seconds
+    }, 8000);
 
-    return () => clearInterval(intervalId); // Clean up on unmount
+    return () => clearInterval(intervalId);
   }, []);
 
 
@@ -105,7 +105,7 @@ const Lobby = () => {
                  return (
                   <div
                     key={participant.id}
-                    className={`flex items-center justify-between p-3 border-2 ${participant.color.border} rounded-lg`}
+                    className={`flex items-center justify-between p-3 border-2 ${participant.color.border}  rounded-lg`}
                   >
                     <div className="flex items-center space-x-4">
                       <div className="relative w-10 h-10">
@@ -201,14 +201,12 @@ const Lobby = () => {
             <div className='p-2 flex flex-col max-h-40 '>
               <h3 className="mb-2 text-xl font-bold bg-black/50 p-2 rounded ">Game mode</h3>
               <div className="flex-1 overflow-auto custom-scrollbar space-y-1">
-
                 <button className="w-full p-2 flex flex-row flex justify-between rounded-lg border-2 border-orange-500 bg-orange-500/10">
                   Solo Slide 
                   <div className="text-orange-500 text-right">
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /> </svg>
                   </div>
                 </button>
-
                 <button className=" w-full text-left p-2 border rounded cursor-not-allowed" disabled> Twin Slides </button>
               </div>
             </div>
@@ -252,11 +250,11 @@ const Lobby = () => {
                       disabled={!allPlayersReady}
                       className={`w-full h-full min-h-20 rounded-lg font-bold text-lg transition-all text-center ${
                         allPlayersReady
-                          ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-green-400'
+                          ? 'bg-gradient-to-r from-[#e4f1fe] to-[#87ceeb] text-white'
                           : 'border-2 text-yellow-400 cursor-not-allowed'
                       }`}
                     >
-                      {allPlayersReady ? 'Start Game' : `Waiting for players (${readyPlayerCount}/${sessionPlayers.length<2?2:sessionPlayers.length})`}
+                      {allPlayersReady ? 'Start Game ❄️' : `Waiting for players (${readyPlayerCount}/${sessionPlayers.length<2?2:sessionPlayers.length})`}
                     </button>
                     
                   ) : (

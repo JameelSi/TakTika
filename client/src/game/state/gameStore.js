@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import { clansData } from '../data/clans';
-import { eventsData } from '../data/events';
+import clansData from '../data/clans.json';
+import  eventsData  from '../data/wheelEvents.json';
 import { createInitialTerritories } from '../utils/mapUtils';
-import geoMap from '../data/standard-map.json';
+import geoMap from '../data/maps/gearhall.json';
 
 export const useGameStore = create((set, get) => ({
   // Game state

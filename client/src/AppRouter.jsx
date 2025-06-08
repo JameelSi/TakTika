@@ -1,13 +1,17 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import Lobby from './components/Lobby';
-
+import GameBoard from './components/GameBoard';
 
 const router = createBrowserRouter(
   [
     {
       path: "/",
       element: <Lobby />,
+    },
+    {
+      path: "/startGame",
+      element: <GameBoard />,
     },
     {
       path: "*",

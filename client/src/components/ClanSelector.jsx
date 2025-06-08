@@ -49,7 +49,7 @@ const ClanSelector = ({ onSelect }) => {
               {selectedClan === clan.id && (
                 <div className="text-orange-500">
                   <svg
-                    className="w-6 h-6"
+                    className="w-5 h-5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"

@@ -56,7 +56,7 @@ const EventWheel = ({ onClose, onEventSelected }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 ">
       <div className="bg-white rounded-xl p-6 w-[420px] text-center relative z-10">
         <h2 className="text-2xl font-bold mb-4">Event Wheel</h2>
 
@@ -87,8 +87,8 @@ const EventWheel = ({ onClose, onEventSelected }) => {
                   <text
                     x={labelPos.x}
                     y={labelPos.y}
-                    fill="white"
-                    fontSize="12"
+                    fill="black"
+                    fontSize="10"
                     textAnchor="middle"
                     alignmentBaseline="middle"
                   >

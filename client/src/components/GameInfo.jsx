@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGameStore } from '../game/state/gameStore';
-import { useDiscord } from '../discord/DiscordProvider';
+import { useDiscord } from '../providers/DiscordProvider';
 
 const GameInfo = () => {
   const { players, currentPlayerId, resources } = useGameStore();

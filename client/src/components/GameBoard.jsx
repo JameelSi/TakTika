@@ -6,7 +6,7 @@ import GameInfo from './GameInfo';
 import EventWheel from './EventWheel';
 import CombatResolver from './CombatResolver';
 
-import geoMap from '../game/data/standard-map.json'; // Load your GeoJSON here
+import geoMap from '../game/data/maps/gearhall.json';
 
 const GameBoard = () => {
   const { players, currentTurn, timeOfDay } = useGameStore();
@@ -49,7 +49,7 @@ const GameBoard = () => {
   };
 
   return (
-    <div className={`bg-${timeOfDay}-theme`}>
+    <div className={`bg-day-theme`}>
       <ComposableMap projection="geoEqualEarth">
         <Geographies geography={geoMap}>
           {({ geographies }) =>
