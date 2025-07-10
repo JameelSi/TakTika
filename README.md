@@ -4,7 +4,7 @@ TakTik is a turn-based multiplayer strategy game designed to be played as a Disc
 
 ## Game Features
 
-- **Ant Colony Theme**: Each player controls a different ant clan with unique traits and abilities
+- **Penguin Colony Theme**: Each player controls a different ant clan with unique traits and abilities
 - **Territory Control**: Deploy ant units across territories to expand your colony's influence
 - **Combat System**: Uses a coin-flip mechanic (three coins with custom values) to resolve combat
 - **Random Events**: A spin-the-wheel system triggers random events each turn
