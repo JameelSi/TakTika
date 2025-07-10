@@ -60,6 +60,29 @@ body {
   @apply bg-white rounded-lg shadow-md p-4;
 }
 
+@keyframes float-chunks {
+   0%   { transform: translateX(-10px); }
+   50%  { transform: translateX(10px); }
+   100% { transform: translateX(-10px); }
+}
+.floating-chunks {
+  animation: float-chunks ease-in-out  infinite;
+  opacity: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+@keyframes float-territory {
+   0%   { transform: translateY(0px); }
+   50%  { transform: translateY(5px); }
+   100% { transform: translateY(0px); }
+}
+.floating-territory {
+  animation: float-territory ease-in-out  infinite;
+  opacity: 1;
+  pointer-events: none;
+  user-select: none;
+}
 
 @keyframes spin {
   0% {

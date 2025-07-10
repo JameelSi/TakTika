@@ -1,5 +1,6 @@
 import React from 'react';
 import { useGameStore } from '../game/state/gameStore';
+import { motion } from "framer-motion";
 
 const GameControls = ({ onSpinWheel }) => {
   const { 
@@ -11,40 +12,58 @@ const GameControls = ({ onSpinWheel }) => {
   } = useGameStore();
   
   const isCurrentPlayerTurn = currentPlayerId === Object.keys(players)[0]; // Simplified for MVP
-  
   return (
-    <div className="fixed bottom-4 right-4 z-10">
-      <div className="bg-white bg-opacity-90 rounded-lg shadow-lg p-4 flex flex-col space-y-3">
-        <div className="text-sm font-medium text-gray-600">
-          <span>Turn: {currentTurn}</span>
-          <span className="mx-2">•</span>
-          <span className={timeOfDay === 'day' ? 'text-yellow-500' : 'text-indigo-700'}>
-            {timeOfDay === 'day' ? '☀️ Day' : '🌙 Night'}
-          </span>
-        </div>
-        
-        <div className="flex space-x-2">
-          <button 
-            className="btn btn-primary text-sm py-1"
-          >
-            Toggle Time
-          </button>
-          
-          <button 
-            className="btn btn-secondary text-sm py-1"
-            onClick={onSpinWheel}
-          >
-            Spin Wheel
-          </button>
-          
-          <button 
-            className={`btn text-sm py-1 ${isCurrentPlayerTurn ? 'btn-accent' : 'btn-disabled'}`}
-            onClick={endTurn}
-            disabled={!isCurrentPlayerTurn}
-          >
-            End Turn
-          </button>
-        </div>
+    <div className="fixed bottom-1 right-1 z-1 w-4/5 h-1/5    p-3">
+      <div className=" flex flex-row  space-x-1 justify-center">
+
+            <motion.div
+              className="w-24 h-36 bg-blue-200 rounded-xl shadow-lg flex flex-col items-center justify-center p-2 border-2 border-blue-400"
+              whileHover={{ scale: 1.5 }}
+            >
+              <img src="assets/default_avatar.png" alt="alt" className="w-12 h-12 mb-2" />
+              <p className="text-xs text-center text-blue-900">"Blazzard!"</p>
+            </motion.div>
+             <motion.div
+
+              className="w-24 h-36 bg-blue-200 rounded-xl shadow-lg flex flex-col items-center justify-center p-2 border-2 border-blue-400"
+              whileHover={{ scale: 1.5 }}
+            >
+              <img src="assets/default_avatar.png" alt="alt" className="w-12 h-12 mb-2" />
+              <p className="text-xs text-center text-blue-900">"Blazzard!"</p>
+            </motion.div>
+
+             <motion.div
+              className="w-24 h-36 bg-blue-200 rounded-xl shadow-lg flex flex-col items-center justify-center p-2 border-2 border-blue-400"
+              whileHover={{ scale: 1.5 }}
+            >
+              <img src="assets/default_avatar.png" alt="alt" className="w-12 h-12 mb-2" />
+              <p className="text-xs text-center text-blue-900">"Blazzard!"</p>
+            </motion.div>
+
+            <motion.div
+              className="w-24 h-36 bg-blue-200 rounded-xl shadow-lg flex flex-col items-center justify-center p-2 border-2 border-blue-400"
+              whileHover={{ scale: 1.5 }}
+            >
+              <img src="assets/default_avatar.png" alt="alt" className="w-12 h-12 mb-2" />
+              <p className="text-xs text-center text-blue-900">"Blazzard!"</p>
+            </motion.div>
+
+            <motion.div
+              className="w-24 h-36 bg-blue-200 rounded-xl shadow-lg flex flex-col items-center justify-center p-2 border-2 border-blue-400"
+              whileHover={{ scale: 1.5 }}
+            >
+              <img src="assets/default_avatar.png" alt="alt" className="w-12 h-12 mb-2" />
+              <p className="text-xs text-center text-blue-900">"Blazzard!"</p>
+            </motion.div>
+
+            <motion.div
+              className="w-24 h-36 bg-blue-200 rounded-xl shadow-lg flex flex-col items-center justify-center p-2 border-2 border-blue-400"
+              whileHover={{ scale: 1.5 }}
+            >
+              <img src="assets/default_avatar.png" alt="alt" className="w-12 h-12 mb-2" />
+              <p className="text-xs text-center text-blue-900">"Blazzard!"</p>
+            </motion.div>
+
       </div>
     </div>
   );

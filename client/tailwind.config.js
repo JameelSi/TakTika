@@ -19,7 +19,7 @@ export default {
       backgroundImage: {
         'loading-bg': "url('assets/loading_bg.png')",
         'lobby-bg': "url('assets/bg_lobby.png')",
-        'day-theme': 'linear-gradient(to bottom, #87ceeb, #e4f1fe)',
+        'day-theme': 'linear-gradient(to top, #87ceeb, #e4f1fe)',
         'night-theme': 'linear-gradient(to bottom, #1a1a40, #3a3a75)',
       },
       animation: {
