@@ -40,8 +40,7 @@ taktik-discord-game/
 │       │   ├── data/        # JSON data files
 │       │   ├── state/       # Zustand state management
 │       │   └── utils/       # Utility functions
-│       ├── discord/         # Discord SDK integration
-│       └── socket.js        # Socket.IO client setup
+│       ├── providers/       # Discord SDK integration & Socket.IO client setup,game manager
 ├── server/                  # Backend Node.js + Express application
 │   └── src/
 │       └── index.js         # Server entry point with Socket.IO handlers
