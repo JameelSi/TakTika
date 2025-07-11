@@ -1,7 +1,7 @@
 # STATUS: IN-DEV
 # TakTika - Discord Voice Activity Strategy Game
 
-TakTik is a turn-based multiplayer strategy game designed to be played as a Discord Voice Activity. Players control ant colonies battling for territorial dominance on a fictional map made of custom regions.
+TakTik is a turn-based multiplayer strategy game designed to be played as a Discord Voice Activity. Players control penguins rookeries battling for territorial dominance on a fictional map made of custom regions.
 
 ## Game Features
 
@@ -32,7 +32,7 @@ TakTik is a turn-based multiplayer strategy game designed to be played as a Disc
 ## Project Structure
 
 ```
-taktik-discord-game/
+taktika/
 ├── client/                  # Frontend React application
 │   ├── public/              # Static assets
 │   └── src/
@@ -81,9 +81,9 @@ The game is designed to be modular and extensible:
 TakTik is designed as a Discord Voice Activity, allowing players to join and play directly within Discord voice channels.
 
 ##in-game: 
-###-loading
+### -loading
 ![Screenshot 2025-07-10 121613](https://github.com/user-attachments/assets/86203f0b-4050-4420-aaa9-37dc22e994e9)
-###-lobby:
+### -lobby:
 ![Screenshot 2025-07-10 121626](https://github.com/user-attachments/assets/c22e19c8-fecf-4ad4-ad75-f9e959b1ba93)
-###-game:
+### -game:
 ![Screenshot 2025-07-10 121641](https://github.com/user-attachments/assets/94fd544b-e879-456c-a04e-a8fd8cbab70e)
